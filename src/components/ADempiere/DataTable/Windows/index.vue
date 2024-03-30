@@ -59,7 +59,7 @@
         :column-key="fieldAttributes.columnName"
         :prop="fieldAttributes.columnName"
         sortable
-        :min-width="widthColumn(fieldAttributes)"
+        :min-width="fullGridMode ? '100' : '250'"
         :fixed="fieldAttributes.isFixedTableColumn"
       >
         <template slot="header">
@@ -103,7 +103,7 @@ import {
 } from '@vue/composition-api'
 
 import store from '@/store'
-
+import { mapState } from 'vuex'
 // Components and Mixins
 import CellEditInfo from '@/components/ADempiere/DataTable/Components/CellEditInfo.vue'
 import FullScreenContainer from '@/components/ADempiere/ContainerOptions/FullScreenContainer/index.vue'
@@ -112,7 +112,6 @@ import useFullScreenContainer from '@/components/ADempiere/ContainerOptions/Full
 
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
-
 export default defineComponent({
   name: 'WindowsTable',
 
@@ -121,7 +120,11 @@ export default defineComponent({
     FullScreenContainer,
     LoadingView
   },
-
+  computed: {
+    ...mapState({
+      fullGridMode: state => state.settings.fullGridMode
+    })
+  },
   props: {
     parentUuid: {
       type: String,
@@ -707,5 +710,9 @@ export default defineComponent({
     border: 1px solid blue;
     overflow: hidden;
   }
+}
+.el-input--medium{
+  width: 10px;
+  font-size: 10px;
 }
 </style>
