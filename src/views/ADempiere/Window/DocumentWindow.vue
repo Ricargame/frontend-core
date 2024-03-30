@@ -17,7 +17,7 @@
 -->
 
 <template>
-  <div class="document-window" :style="stylePanelHeight">
+  <div class="document-window" :style="stylePanelHeight" :class="{ 'isFixed': fixedHeader }">
     <div id="tab-manager" :style="sizeTab">
       <embedded
         :visible="showRecordAccess"
@@ -59,6 +59,7 @@ import { defineComponent, computed, watch, ref } from '@vue/composition-api'
 
 import language from '@/lang'
 import store from '@/store'
+import { mapState } from 'vuex'
 
 // Components and Mixins
 import ActionMenu from '@/components/ADempiere/ActionMenu/index.vue'
@@ -75,7 +76,6 @@ import useFullScreenContainer from '@/components/ADempiere/ContainerOptions/Full
 
 export default defineComponent({
   name: 'DocumentWindow',
-
   components: {
     ActionMenu,
     RecordAccess,
@@ -85,7 +85,11 @@ export default defineComponent({
     TabManagerChild,
     LoadingView
   },
-
+  computed: {
+    ...mapState({
+      fixedHeader: state => state.settings.fixedHeader
+    })
+  },
   props: {
     windowMetadata: {
       type: Object,
@@ -288,5 +292,34 @@ export default defineComponent({
 }
 .tab-manager {
   height: 100%;
+}
+</style>
+
+<style lang="scss">
+
+.isFixed{
+  z-index:2;
+  #tab-manager{
+    .el-header{
+    position: fixed;
+    width: 92%;
+    margin-top:3%;
+    z-index: 1;
+  }
+  .right-panel-field-options-mobile {
+    margin-top: 7%
+  }
+  .el-tabs__nav-scroll{
+    position:fixed;
+    width: 100%;
+    background-color: #F5F7FA;
+    border-bottom: 1px solid #dfe4ed;
+    margin: 0;
+    z-index: 1;
+  }
+  .el-card__body{
+    z-index: -1;
+  }
+  }
 }
 </style>
