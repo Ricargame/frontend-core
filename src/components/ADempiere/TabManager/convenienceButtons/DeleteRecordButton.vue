@@ -17,7 +17,7 @@
 -->
 
 <template>
-  <el-popover
+  <!-- <el-popover
     v-if="isDeleteRecord"
     v-model="isVisibleConfirmDelete"
     placement="top"
@@ -68,7 +68,63 @@
         {{ $t('actionMenu.delete') }}
       </span>
     </el-button>
-  </el-popover>
+  </el-popover> -->
+  <div class="el-dropdown">
+    <el-dropdown
+      split-button
+      size="small"
+      type="danger"
+      class="delete-record-container"
+      @click="handleClick"
+    >
+      <svg-icon icon-class="delete" />
+      <span>
+        {{ $t('actionMenu.delete') }}
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>
+          <svg-icon icon-class="delete" />
+          {{ $t('Eliminar todos') }}
+        </el-dropdown-item>
+        <el-dropdown-item divided>
+          <svg-icon icon-class="delete" />
+          {{ $t('Desabilitar todos') }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <el-dialog
+      :visible.sync="isVisibleConfirmDelete"
+    >
+      <el-descriptions :title="$t('window.confirmDeleteRecord')" direction="vertical" :column="tabAttributes.identifierColumns.length" border>
+        <el-descriptions-item
+          v-for="(item, index) in tabAttributes.identifierColumns"
+          :key="index"
+          :label="item.name"
+        >
+          <cell-display-info
+            v-for="(record, key) in listOfRecordsToDeleted"
+            :key="key"
+            :field-attributes="item"
+            :data-row="record"
+          />
+        </el-descriptions-item>
+      </el-descriptions>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          type="danger"
+          class="button-base-icon"
+          icon="el-icon-close"
+          @click="isVisibleConfirmDelete = false"
+        />
+        <el-button
+          type="primary"
+          class="button-base-icon"
+          icon="el-icon-check"
+          @click="deleteCurrentRecord()"
+        />
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -102,7 +158,20 @@ export default defineComponent({
       required: true
     }
   },
-
+  data() {
+    return {
+      isVisibleConfirmDelete: false
+    }
+  },
+  methods: {
+    handleClick() {
+      this.isVisibleConfirmDelete = true
+    },
+    handleDelete() {
+      console.log('Registro eliminado')
+      this.isVisibleConfirmDelete = false
+    }
+  },
   setup(props) {
     const isVisibleConfirmDelete = ref(false)
     const buttonConfirmDelete = ref(null)
