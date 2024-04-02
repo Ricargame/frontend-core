@@ -33,6 +33,7 @@
         :all-tabs-list="allTabsList"
         :actions-manager="actionsManager"
         :style="styleScroll"
+        :class="{ 'isFixed': fixedHeader }"
       />
       <modal-dialog
         v-if="!isEmptyValue(processUuid)"
@@ -41,8 +42,9 @@
         :container-uuid="processUuid"
       />
     </div>
-    <div v-if="isWithChildsTab" id="tab-manager-child" :style="sizeTabChild">
+    <div v-if="isWithChildsTab" id="tab-manager-child" :style="sizeTabChild" @mouseover="changeStik()">
       <tab-manager-child
+        ref="tab-manager-child"
         class="tab-manager"
         :parent-uuid="windowMetadata.uuid"
         :container-manager="containerManager"
@@ -59,6 +61,7 @@ import { defineComponent, computed, watch, ref } from '@vue/composition-api'
 
 import language from '@/lang'
 import store from '@/store'
+import { mapState } from 'vuex'
 
 // Components and Mixins
 import ActionMenu from '@/components/ADempiere/ActionMenu/index.vue'
@@ -85,7 +88,11 @@ export default defineComponent({
     TabManagerChild,
     LoadingView
   },
-
+  computed: {
+    ...mapState({
+      fixedHeader: state => state.settings.fixedHeader
+    })
+  },
   props: {
     windowMetadata: {
       type: Object,
@@ -238,6 +245,16 @@ export default defineComponent({
       return 'min-height: 84vh !important;'
     })
 
+    function changeStik() {
+      const manager = this.$refs['tab-manager']
+      const managerChild = this.$refs['tab-manager-child']
+      if (manager.classList.contains('isFixed')) {
+        manager.classList.remove('isFixed')
+      } else if (managerChild.classList.contains('isFixed')) {
+        managerChild.classList.remove('isFixed')
+      }
+      // this.$refs['tab-manager'].classList.remove('isFixed')
+    }
     /**
      * Watch
      */
@@ -273,7 +290,8 @@ export default defineComponent({
       isViewFullScreenParent,
       sizeTab,
       sizeTabChild,
-      styleScroll
+      styleScroll,
+      changeStik
     }
   }
 
@@ -288,5 +306,34 @@ export default defineComponent({
 }
 .tab-manager {
   height: 100%;
+}
+</style>
+<style lang="scss">
+.isFixed{
+  z-index:2;
+    .el-header{
+    position: fixed;
+    width: 92%;
+    margin-top:3%;
+    z-index: 1;
+  }
+  .right-panel-field-options-mobile {
+    margin-top: 7%
+  }
+  .right-panel-field-options {
+    margin-top: 7%
+  }
+  .el-tabs__nav-scroll{
+    position:fixed;
+    width: 100%;
+    background-color: #F5F7FA;
+    border-bottom: 1px solid #dfe4ed;
+    margin: 0;
+    z-index: 1;
+  }
+  .el-card__body{
+    z-index: -1;
+  }
+
 }
 </style>
