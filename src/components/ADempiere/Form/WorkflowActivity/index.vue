@@ -691,10 +691,10 @@ export default defineComponent({
   }
   .panel-child{
     height:var(--size-panel-child-height);
-    margin-top:-14%
+    margin-top:-30%
   }
   .v-md-editor{
-    height: 84% !important
+    height: 78% !important
   }
   .style-bot{
     margin-top:-2%
@@ -720,7 +720,7 @@ export default defineComponent({
     margin-top:-15%
   }
   .v-md-editor{
-    height: 85% !important
+    height: 82% !important
   }
   .style-bot{
     margin-top:-3%
@@ -743,10 +743,10 @@ export default defineComponent({
   }
   .panel-child{
     height:var(--size-panel-child-height);
-    margin-top:-25%
+    margin-top:-30%
   }
   .v-md-editor{
-    height: 85% !important
+    height: 82% !important
   }
   .style-bot{
     margin-top:-3%
@@ -769,9 +769,9 @@ export default defineComponent({
   }
   .panel-child{
     height:var(--size-panel-child-height);
-    margin-top:-27%;
+    margin-top:-40%;
     .v-md-editor{
-      height: 88% !important
+      height: 84% !important
     }
     .style-bot{
       margin-top:-40px
@@ -796,7 +796,7 @@ export default defineComponent({
     height:var(--size-panel-child-height);
     margin-top:-30%;
     .v-md-editor{
-      height: 88% !important
+      height: 84% !important
     }
     .style-bot{
       margin-top:-40px
