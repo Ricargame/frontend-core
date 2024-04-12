@@ -20,7 +20,7 @@
   <span
     v-if="!isLoading"
   >
-    <el-descriptions :column="1">
+    <el-descriptions :column="2">
       <el-descriptions-item label-style="{ color: #606266; font-weight: bold; }">
         <template slot="label">
           <svg-icon icon-class="table" style="margin-right: 10px;" />
@@ -29,6 +29,13 @@
         <span style="color: #606266; font-weight: bold;">
           {{ getTableName }}
         </span>
+      </el-descriptions-item>
+      <el-descriptions-item v-if="!isEmptyValue(listLogs.entity_logs)" label-style="{ color: #606266; font-weight: bold; }">
+        <template slot="label">
+          <i style="margin-right: 10px;" />
+          {{ $t('window.containerInfo.log.allChanges') }}
+        </template>
+        <el-switch v-model="showAllChanges" @click="activate(listLogs.entity_logs)" />
       </el-descriptions-item>
     </el-descriptions>
     <el-descriptions :column="2">
@@ -111,7 +118,8 @@
           </div>
 
           <el-collapse-transition>
-            <div v-show="(currentKey === keys)">
+            <div v-show="showAllChanges || currentKey === keys || keys in currentKeyFull">
+
               <span v-for="(changeLog, index) in entityLogs.change_logs" :key="index">
                 <hr class="divider">
 
@@ -151,6 +159,7 @@ import { EVENT_INSERT, EVENT_UPDATE, EVENT_DELETE } from '@/utils/ADempiere/reco
 // Utils and Helper Methods
 import { isDocumentStatus } from '@/utils/ADempiere/constants/systemColumns'
 import { translateDate } from '@/utils/ADempiere/formatValue/dateFormat'
+// import { isEmptyValue } from '@/utils/ADempiere'
 
 export default defineComponent({
   name: 'RecordLogs',
@@ -187,23 +196,50 @@ export default defineComponent({
   setup(props) {
     const currentRecordLogs = ref({ name: '' })
     const currentKey = ref(-1)
+    const currentKeyFull = ref([])
     const typeAction = ref(0)
     const currentTabLogs = ref('0')
-
+    const showAllChanges = ref(false)
+    const currentPanelKey = ref(null)
     // // use getter to reactive properties
     const listLogs = computed(() => {
       return store.getters.getRecordLogs
     })
-
+    const activate = computed((key) => {
+      if (showAllChanges.value === true) {
+        const keys = key.listLogs.entity_logs
+        if (keys in currentKeyFull.value) {
+          return false
+        } else {
+          keys.forEach((e, index) => {
+            currentKeyFull.value[index] = index
+            console.log(index)
+          })
+          return true
+        }
+      } else {
+        currentKeyFull.value = []
+      }
+      console.log(currentKeyFull.value)
+    })
     /**
      * showkey
      */
     const showkey = (key, index) => {
+      console.log(key)
+      if (key in currentKeyFull.value) {
+        currentKeyFull.value.splice(key, 1)
+        console.log(currentKeyFull.value[key])
+        console.log(currentKeyFull.value)
+        return
+      }
       if (key === currentKey.value && index === typeAction.value) {
         currentKey.value = 1000
+        return
       } else {
         currentKey.value = key
         typeAction.value = index
+        return
       }
     }
 
@@ -234,6 +270,10 @@ export default defineComponent({
       typeAction,
       currentKey,
       listLogs,
+      showAllChanges,
+      currentKeyFull,
+      currentPanelKey,
+      activate,
       // Methods
       isDocumentStatus,
       showkey,

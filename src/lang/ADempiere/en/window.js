@@ -18,8 +18,8 @@
 
 const window = {
   advancedQuery: {
-    title: 'Advanced Query',
-    help: 'Perform a search using ranges of values, multiple selection of values, and comparison operators'
+    title: 'Consulta Avanzada',
+    help: 'Realiza una búsqueda haciendo uso de rangos de valores, selección múltiple de valores, y operadores de comparación'
   },
   newRecord: 'New Record',
   copyRecord: 'Copy Record',
@@ -62,7 +62,8 @@ const window = {
       recordID: 'Record ID',
       recordUUID: 'Record UUID',
       tab: 'Tab',
-      tableName: 'Table Name'
+      tableName: 'Table Name',
+      allChanges: 'See all changes'
     },
     notices: {
       user: 'User'
