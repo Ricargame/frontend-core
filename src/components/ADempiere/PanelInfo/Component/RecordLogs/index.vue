@@ -20,7 +20,7 @@
   <span
     v-if="!isLoading"
   >
-    <el-descriptions :column="1">
+    <el-descriptions :column="2">
       <el-descriptions-item label-style="{ color: #606266; font-weight: bold; }">
         <template slot="label">
           <svg-icon icon-class="table" style="margin-right: 10px;" />
@@ -29,6 +29,12 @@
         <span style="color: #606266; font-weight: bold;">
           {{ getTableName }}
         </span>
+      </el-descriptions-item>
+      <el-descriptions-item label-style="{ color: #606266; font-weight: bold; }">
+        <template slot="label">
+          <i style="margin-right: 10px;" />
+        </template>
+        <el-switch v-model="showAllChanges" @change="showkey(listLogs.entity_logs)" />
       </el-descriptions-item>
     </el-descriptions>
     <el-descriptions :column="2">
@@ -111,7 +117,7 @@
           </div>
 
           <el-collapse-transition>
-            <div v-show="(currentKey === keys)">
+            <div v-show="currentKey.includes(keys)">
               <span v-for="(changeLog, index) in entityLogs.change_logs" :key="index">
                 <hr class="divider">
 
@@ -186,10 +192,10 @@ export default defineComponent({
 
   setup(props) {
     const currentRecordLogs = ref({ name: '' })
-    const currentKey = ref(-1)
+    const currentKey = ref([])
     const typeAction = ref(0)
     const currentTabLogs = ref('0')
-
+    const showAllChanges = ref(false)
     // // use getter to reactive properties
     const listLogs = computed(() => {
       return store.getters.getRecordLogs
@@ -198,13 +204,31 @@ export default defineComponent({
     /**
      * showkey
      */
-    const showkey = (key, index) => {
-      if (key === currentKey.value && index === typeAction.value) {
-        currentKey.value = 1000
+    const showkey = (key) => {
+      console.log(key)
+      if (Array.isArray(key)) {
+        if (showAllChanges.value === true) {
+          key.forEach((e, i) => {
+            // Asigna el índice a cada elemento del array currentKey.value
+            currentKey.value[i] = i
+          })
+        } else {
+          key.forEach((e, i) => {
+            // Asigna el índice a cada elemento del array currentKey.value
+            currentKey.value[i] = []
+          })
+        }
       } else {
-        currentKey.value = key
-        typeAction.value = index
+        if (currentKey.value.includes(key)) {
+          const index = currentKey.value.indexOf(key)
+          currentKey.value.splice(index, 1)
+          console.log('Elemento eliminado')
+        } else {
+          currentKey.value.push(key)
+          console.log('Elemento agregado')
+        }
       }
+      console.log(currentKey.value)
     }
 
     const getTableName = computed(() => {
@@ -234,6 +258,7 @@ export default defineComponent({
       typeAction,
       currentKey,
       listLogs,
+      showAllChanges,
       // Methods
       isDocumentStatus,
       showkey,
