@@ -29,7 +29,8 @@ export function requestListAccountingCombinations({
   contextAttributesList,
   filters = [],
   pageToken,
-  pageSize = ROWS_OF_RECORDS_BY_PAGE
+  pageSize = ROWS_OF_RECORDS_BY_PAGE,
+  selectColumns
 }) {
   filters = filters.map(attribute => {
     return {
@@ -49,14 +50,16 @@ export function requestListAccountingCombinations({
     })
   }
 
+  console.log(selectColumns)
   return request({
-    url: '/general-ledger/accouting-combination/accounting-combinations',
+    url: '/general-ledger/accounts/combinations',
     method: 'get',
     params: {
       context_attributes: contextAttributes,
       filters,
       page_token: pageToken,
-      page_size: pageSize
+      page_size: pageSize,
+      select_columns: selectColumns
     }
   })
     .then(response => {

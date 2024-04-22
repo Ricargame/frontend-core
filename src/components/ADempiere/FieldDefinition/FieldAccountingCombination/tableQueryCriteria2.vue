@@ -79,27 +79,25 @@
       </el-collapse-item>
     </el-collapse>
 
-    <!-- <el-table
+    <el-table
       ref="accountCombinationsTable"
       v-loading="isLoadingRecords"
       class="accouting-combintantions-table"
-      :data="recordsList"
       highlight-current-row
       border
       fit
       :height="200"
       :max-height="400"
       size="mini"
-      @current-change="handleCurrentChange"
       @row-dblclick="changeRecord"
     >
       <p slot="empty" style="width: 100%;">
         {{ $t('notifications.searchWithOutRecords') }}
       </p>
 
-      <index-column
+      <!-- <index-column
         :page-number="pageNumber"
-      />
+      /> -->
 
       <el-table-column
         v-for="(head, key) in labelTable"
@@ -109,7 +107,7 @@
         header-align="center"
       >
         <template slot-scope="scope">
-          formatted displayed value
+          <!-- formatted displayed value -->
           <cell-display-info
             :parent-uuid="metadata.parentUuid"
             :container-uuid="uuidForm"
@@ -120,7 +118,7 @@
           />
         </template>
       </el-table-column>
-    </el-table> -->
+    </el-table>
 
     <el-row class="accouting-combintantions-footer">
       <!-- <el-col :span="20">
@@ -236,8 +234,52 @@ export default defineComponent({
     const timeOutRecords = ref(null)
     const combinations = ref('')
     const setValuesCombinations = ref({})
-
     // Computed
+    const labelTable = computed(() => {
+      return metadataList.value.map(field => {
+        if (field.columnName === 'AD_Client_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_AD_Client_ID'
+          }
+        } else if (field.columnName === 'AD_Org_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_AD_Org_ID'
+          }
+        } else if (field.columnName === 'Account_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_Account_ID'
+          }
+        } else if (field.columnName === 'M_Product_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_M_Product_ID'
+          }
+        } else if (field.columnName === 'C_BPartner_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_C_BPartner_ID'
+          }
+        } else if (field.columnName === 'C_Project_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_C_Project_ID'
+          }
+        } else if (field.columnName === 'C_Campaign_ID') {
+          return {
+            label: field.name,
+            columnName: 'DisplayColumn_C_Campaign_ID'
+          }
+        }
+        return {
+          label: field.name,
+          columnName: field.columnName
+        }
+      })
+    })
+
     const title = computed(() => {
       let title = props.metadata.panelName
       if (!isEmptyValue(props.metadata.panelName) && !isSameValues(props.metadata.panelName, props.metadata.name)) title += ` (${props.metadata.name})`
@@ -346,6 +388,7 @@ export default defineComponent({
           props.metadataList.find(itemDefinition => itemDefinition.columnName === item.columnName)
       })
       clearTimeout(timeOutRecords.value)
+      console.log(organizationId)
       timeOutRecords.value = setTimeout(() => {
         isLoadingRecords.value = true
         store.dispatch('listAccountCombinations', {
@@ -353,7 +396,8 @@ export default defineComponent({
           containerUuid: uuidForm.value,
           contextAttributesList: contextAttributesList.value,
           filters,
-          pageNumber
+          pageNumber,
+          organizationId: organizationId
         })
           .then(response => {
             if (isEmptyValue(response)) {
@@ -408,16 +452,13 @@ export default defineComponent({
         .then(response => {
           const { values } = response
           setValuesCombinations.value = values
-          // combinations.value = values.Combination
+          combinations.value = values.Combination
           metadataList.value.map(list => {
             return {
               ...list,
               value: values[list.columnName]
             }
           })
-          setTimeout(() => {
-            isLoadingPanel.value = false
-          }, 500)
         })
     }
 
@@ -441,6 +482,7 @@ export default defineComponent({
       timeOutRecords,
       combinations,
       // Computed
+      labelTable,
       title,
       uuidForm,
       accoutId,
@@ -460,7 +502,6 @@ export default defineComponent({
       saveAccoutingCombination
     }
   }
-
 })
 </script>
 

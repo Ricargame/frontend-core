@@ -41,7 +41,7 @@ export default {
     listAccoutingElementsFromServer({ commit, getters }) {
       return new Promise(resolve => {
         const sessionContext = getters.getAllSessionContext
-        if (!isEmptyValue(sessionContext)) {
+        if (isEmptyValue(sessionContext)) {
           return resolve()
         }
         const isShowAcct = sessionContext['#ShowAcct']
