@@ -180,6 +180,7 @@
               <el-switch v-model="showAccumulated" @change="visibleColumn" />
             </el-form-item>
             <el-form-item
+              false
               class="front-item-w-trial-balance"
               style="text-align: center; margin-top: -5%;"
             >
@@ -275,8 +276,8 @@ export default defineComponent({
      * Ref
      */
 
-    const showPeriod = ref(false)
-    const showAccumulated = ref(false)
+    const showPeriod = ref(true)
+    const showAccumulated = ref(true)
     // Values
 
     const porcent = ref(null)
@@ -379,13 +380,13 @@ export default defineComponent({
 
     function visibleColumn() {
       viewList.value = headerList.value
-      if (showPeriod.value === true && showAccumulated.value === true) {
+      if (showPeriod.value === false && showAccumulated.value === false) {
         visibleAll()
         return
-      } else if (showPeriod.value === true) {
+      } else if (showPeriod.value === false) {
         visiblePeriod()
         return
-      } else if (showAccumulated.value === true) {
+      } else if (showAccumulated.value === false) {
         visibleAccumulated()
         return
       }
@@ -397,12 +398,12 @@ export default defineComponent({
     }
 
     const visibleAccumulated = () => {
-      const columnsAccumulated = ['ytd_actual_amount', 'ytd_budget_amount', 'variance_amount']
+      const columnsAccumulated = ['ytd_actual_amount', 'ytd_budget_amount', 'variance_amount', 'variance_percentage']
       viewList.value = headerList.value.filter((header) => !columnsAccumulated.includes(header.columnName))
     }
 
     const visibleAll = () => {
-      const columAll = ['period_actual_amount', 'period_budget_amount', 'period_variance_amount', 'ytd_actual_amount', 'ytd_budget_amount', 'variance_amount']
+      const columAll = ['period_actual_amount', 'period_budget_amount', 'period_variance_amount', 'ytd_actual_amount', 'ytd_budget_amount', 'variance_amount', 'variance_percentage']
       viewList.value = headerList.value.filter((header) => !columAll.includes(header.columnName))
     }
     /**
