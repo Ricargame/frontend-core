@@ -15,132 +15,91 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
-
 <template>
   <el-main
     v-shortkey="shortsKey"
     v-loading="isLoadingFields"
-    class="general-info-list-container"
+    class="accouting-combintantions-list-container"
     style="padding-top: 0px"
     @shortkey.native="keyAction"
   >
-    <el-collapse v-model="activeAccordion" accordion class="general-info-list-query-criteria">
+    <el-collapse
+      v-model="activeAccordion"
+      accordion
+      class="accouting-combintantions-query-criteria"
+    >
       <el-collapse-item name="query-criteria">
         <template slot="title">
           {{ title }}
         </template>
-
-        <el-form
-          label-position="top"
-          size="small"
-          @submit.native.prevent="notSubmitForm"
-        >
-          <el-row>
-            <field-definition
-              v-for="(fieldAttributes) in storedFieldsListQuery"
-              :key="fieldAttributes.columnName"
-              :metadata-field="fieldAttributes"
-              :container-uuid="uuidForm"
-              :container-manager="containerManagerList"
-              :size-col="6"
-            />
-          </el-row>
-        </el-form>
       </el-collapse-item>
     </el-collapse>
-
     <el-table
-      ref="generalInfoTable"
-      v-loading="isloadingTable"
-      class="general-info-table"
-      :data="recordsList"
+      ref=""
+      v-loading="isLoadingRecords"
+      class=""
       highlight-current-row
       border
       fit
-      :max-height="300"
+      :height="200"
+      :max-height="400"
       size="mini"
-      @current-change="handleCurrentChange"
-      @row-dblclick="changeRecord"
     >
-      <p slot="empty" style="width: 100%;">
-        {{ $t('businessPartner.emptyBusinessPartner') }}
+      <p slot="empty" style="width: 100%">
+        {{ $t("notifications.searchWithOutRecords") }}
       </p>
-
-      <index-column
-        :page-number="pageNumber"
-        :page-size="pageSize"
-      />
-
+      <!-- <index-column :page-number="recordData.pageNumber" /> -->
       <el-table-column
-        v-for="(fieldAttributes, key) in storedColumnsListTable"
+        v-for="(head, key) in labelTable"
         :key="key"
-        :label="fieldAttributes.name"
-        :prop="fieldAttributes.column_ame"
-        min-width="210"
+        :label="head.label"
+        prop="value"
+        header-align="center"
       >
         <template slot-scope="scope">
           <!-- formatted displayed value -->
           <cell-display-info
             :parent-uuid="metadata.parentUuid"
             :container-uuid="uuidForm"
-            :field-attributes="{
-              column_name: fieldAttributes.column_name,
-              display_type: fieldAttributes.display_type
-            }"
-            :container-manager="containerManagerList"
+            :field-attributes="head"
+            :container-manager="containerManagerSearchList"
             :scope="scope"
             :data-row="scope.row"
           />
         </template>
       </el-table-column>
     </el-table>
-
-    <el-row :gutter="24" class="general-info-list-footer">
-      <el-col :span="14">
+    <el-row class="accouting-combintantions-footer">
+      <!-- <el-col :span="20">
         <custom-pagination
-          :container-manager="containerManagerList"
-          :total-records="generalInfoData.recordCount"
-          :selection="selection"
-          :page-number="pageNumber"
-          :page-size="recordsList.length"
+          :total="recordData.recordCount"
+          :current-page="recordData.pageNumber"
+          :container-manager="containerManagerSearchList"
           :handle-change-page-number="setPageNumber"
-          :handle-change-page-size="handleChangeSizePage"
+          :records-page="recordsList.length"
+          :selection="selection"
         />
-      </el-col>
+      </el-col> -->
 
-      <el-col :span="10">
+      <el-col :span="4">
         <samp style="float: right; padding-top: 4px;">
-          <el-button
-            type="info"
-            class="button-base-icon"
-            plain
-            @click="clearFormValues(); getListSearchRecords();"
-          >
-            <svg-icon icon-class="layers-clear" />
-          </el-button>
-
           <el-button
             :loading="isLoadingRecords"
             type="success"
             class="button-base-icon"
             icon="el-icon-refresh-right"
-            size="small"
-            @click="getListSearchRecords();"
           />
 
           <el-button
             type="danger"
             class="button-base-icon"
             icon="el-icon-close"
-            size="small"
-            @click="closeList(); clearValues();"
           />
 
           <el-button
             type="primary"
             class="button-base-icon"
             icon="el-icon-check"
-            @click="changeRecord()"
           />
         </samp>
       </el-col>
@@ -149,330 +108,110 @@
 </template>
 
 <script>
+import {
+  computed,
+  // onUpdated,
+  ref
+} from '@vue/composition-api'
+
 import store from '@/store'
-
-// Constants
-import { GENERAL_INFO_SEARCH_LIST_FORM } from '@/utils/ADempiere/dictionary/field/search/index.ts'
-import { DISPLAY_COLUMN_PREFIX } from '@/utils/ADempiere/dictionaryUtils'
-import { OPERATOR_LIKE } from '@/utils/ADempiere/dataUtils'
-
-// Components and Mixins
-import fieldSearchMixin from '../mixinFieldSearch'
-import CellDisplayInfo from '@/components/ADempiere/DataTable/Components/CellDisplayInfo.vue'
-import FieldDefinition from '@/components/ADempiere/FieldDefinition/index.vue'
-import CustomPagination from '@/components/ADempiere/DataTable/Components/CustomPagination.vue'
-import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
 
 // Utils and Helper Methods
 import { isEmptyValue, isSameValues } from '@/utils/ADempiere/valueUtils'
-import { containerManager as containerManagerForm } from '@/utils/ADempiere/dictionary/form'
 
-/**
- * TODO: Disable select inactive records.
- */
 export default {
   name: 'PanelGeneralInfoSearch',
 
-  components: {
-    CellDisplayInfo,
-    CustomPagination,
-    FieldDefinition,
-    IndexColumn
-  },
-
-  mixins: [
-    fieldSearchMixin
-  ],
-
   props: {
+    containerManager: {
+      type: Object,
+      default: () => ({
+        actionPerformed: () => {},
+        getFieldsLit: () => {},
+        setDefaultValues: () => {}
+      })
+    },
     metadata: {
       type: Object,
       default: () => {
-        return {
-          containerUuid: GENERAL_INFO_SEARCH_LIST_FORM,
-          columnName: undefined,
-          elementName: undefined
-        }
+        // return {
+        //   // containerUuid: ACCOUTING_COMBINATIONS_LIST_FORM,
+        //   columnName: COLUMN_NAME,
+        // };
       }
     },
     showPopover: {
       type: Boolean,
       default: () => false
-    },
-    containerManager: {
-      type: Object,
-      required: true
     }
   },
 
-  data() {
-    return {
-      activeAccordion: 'query-criteria',
-      timeOutRecords: null,
-      isLoadingRecords: false,
-      timeOutFields: null,
-      isLoadingFields: false,
-      unsubscribe: () => {}
-    }
-  },
+  setup(props) {
+    // Ref
+    const activeAccordion = ref('query-criteria')
+    const isLoadingFields = ref(false)
+    const isLoadingRecords = ref(false)
 
-  computed: {
-    title() {
-      let title = this.metadata.name
-      if (!isEmptyValue(this.metadata.panelName) && !isSameValues(this.metadata.panelName, this.metadata.name)) {
-        title += ` (${this.metadata.panelName})`
-      }
+    // Computed
+    const title = computed(() => {
+      let title = props.metadata.panelName
+      if (
+        !isEmptyValue(props.metadata.panelName) &&
+        !isSameValues(props.metadata.panelName, props.metadata.name)
+      ) { title += ` (${props.metadata.name})` }
       return title
-    },
-    uuidForm() {
-      if (!isEmptyValue(this.metadata.containerUuid)) {
-        return this.metadata.columnName + '_' + this.metadata.containerUuid
-      }
-      return GENERAL_INFO_SEARCH_LIST_FORM
-    },
-    tableName() {
-      return this.metadata.referenceTableName
-    },
-    shortsKey() {
+    })
+
+    const shortsKey = computed(() => {
       return {
         close: ['esc'],
         refreshList: ['f5']
       }
-    },
-    selection() {
-      if (isEmptyValue(this.currentRow)) {
-        return 0
-      }
-      return 1
-    },
-    containerManagerList() {
-      return {
-        ...this.containerManager,
-        ...containerManagerForm,
-        actionPerformed: () => {},
-        getFieldsLit: () => {},
-        isDisplayedField: () => { return true },
-        isDisplayedDefault: () => { return true },
-        isReadOnlyColumn: ({ field, row }) => { return true },
-        setDefaultValues: () => {},
-        setPageNumber: this.setPageNumber
-      }
-    },
-    storedFieldsListQuery() {
-      return store.getters.getSearchQueryFields({
-        tableName: this.tableName
-      })
-        .map(fieldItem => {
-          return {
-            ...fieldItem,
-            containerUuid: this.uuidForm
-          }
-        })
-    },
-    storedColumnsListTable() {
-      return store.getters.getSearchTableFields({
-        tableName: this.tableName
-      })
-        .filter(fieldItem => {
-          return fieldItem.sequence > 0
-        })
-    },
-    isloadingTable() {
-      return this.isLoadingRecords && !isEmptyValue(this.storedColumnsListTable)
-    },
-    generalInfoData() {
-      return store.getters.getGeneralInfoData({
-        containerUuid: this.uuidForm
-      })
-    },
-    pageNumber() {
-      return this.generalInfoData.pageNumber
-    },
-    pageSize() {
-      return this.generalInfoData.pageSize
-    },
-    isReadyFromGetData() {
-      const { isLoaded } = this.generalInfoData
-      return !isLoaded && this.showPopover
-    },
-    currentRow: {
-      set(rowSelected) {
-        store.commit('setGeneralInfoSelectedRow', {
-          containerUuid: this.uuidForm,
-          currentRow: rowSelected
-        })
-      },
-      get() {
-        return store.getters.getGeneralInfoCurrentRow({
-          containerUuid: this.uuidForm
-        })
-      }
-    }
-  },
-
-  watch: {
-    isReadyFromGetData(isToLoad) {
-      if (isToLoad) {
-        this.getListSearchRecords()
-      }
-    }
-  },
-
-  created() {
-    this.unsubscribe = this.subscribeChanges()
-
-    this.loadSearchFields()
-
-    if (this.isReadyFromGetData) {
-      this.getListSearchRecords()
-    }
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      if (this.$refs.generalInfoTable) {
-        this.$refs.generalInfoTable.setCurrentRow(this.currentRow)
-      }
     })
-  },
 
-  beforeDestroy() {
-    this.unsubscribe()
-  },
-
-  methods: {
-    handleCurrentChange(row) {
-      this.currentRow = row
-    },
-    keyAction(event) {
-      switch (event.srcKey) {
-        case 'refreshList':
-          /**
-           * TODO: When refreshing you are making 2 list requests, you can be the
-           * observer that activates the second request
-          */
-          this.getListSearchRecords()
-          break
-
-        case 'close':
-          this.closeList()
-          break
+    const fieldsListElements = computed(() => {
+      return store.getters.getFieldsListAccountInvoice
+    })
+    function getAccoutingElements() {
+      const accoutingElements = store.getters.getFieldsListAccountInvoice
+      if (isEmptyValue(accoutingElements)) {
+        store.dispatch('listFieldsListTableInvoice')
       }
-    },
-    changeRecord() {
-      if (!isEmptyValue(this.currentRow)) {
-        this.setValues(this.currentRow)
-        this.closeList()
-      }
-    },
-    closeList() {
-      store.commit('setGeneralInfoShow', {
-        containerUuid: this.uuidForm,
-        show: false
-      })
-    },
-    setPageNumber(pageNumber) {
-      this.getListSearchRecords(pageNumber, this.pageSize)
-    },
-    subscribeChanges() {
-      return store.subscribe((mutation, state) => {
-        if (mutation.type === 'updateValueOfField') {
-          if (mutation.payload.containerUuid === this.uuidForm) {
-            if (!isEmptyValue(mutation.payload.columnName)) {
-              this.getListSearchRecords()
-            }
-          }
+    }
+    const labelTable = computed(() => {
+      return fieldsListElements.value.map((field) => {
+        return {
+          label: field
         }
       })
-    },
-    loadSearchFields() {
-      const fieldsListTable = this.storedColumnsListTable
-      if (isEmptyValue(fieldsListTable)) {
-        store.dispatch('getSearchFieldsFromServer', {
-          tableName: this.tableName
-        })
-          .finally(() => {
-            this.isLoadingFields = false
-          })
-      }
-    },
-    getListSearchRecords(pageNumber = 0, pageSize) {
-      const values = store.getters.getValuesView({
-        containerUuid: this.uuidForm,
-        format: 'array'
-      })
-        .filter(attribute => {
-          if (attribute.columnName.startsWith(DISPLAY_COLUMN_PREFIX)) {
-            return false
-          }
-          return !isEmptyValue(attribute.value)
-        })
-        .map(attribute => {
-          if (!isEmptyValue(attribute) && !isEmptyValue(attribute.value) && (String(attribute.value).startsWith('%') || String(attribute.value).endsWith('%'))) {
-            return {
-              ...attribute,
-              operator: OPERATOR_LIKE.operator
-            }
-          }
-          return attribute
-        })
+    })
+    getAccoutingElements()
 
-      this.isLoadingRecords = true
-
-      clearTimeout(this.timeOutRecords)
-      this.timeOutRecords = setTimeout(() => {
-        // search on server
-        this.containerManager.getSearchRecordsList({
-          containerUuid: this.uuidForm,
-          parentUuid: this.metadata.parentUuid,
-          tableName: this.metadata.referenceTableName,
-          columnName: this.metadata.columnName,
-          id: this.metadata.id,
-          contextColumnNames: this.metadata.reference.context_column_names,
-          filters: values,
-          pageNumber,
-          pageSize
-        })
-          .then(response => {
-            if (isEmptyValue(response)) {
-              this.$message({
-                type: 'warning',
-                showClose: true,
-                message: this.metadata.name + this.$t('infoSearch.notFound')
-              })
-            }
-
-            this.$nextTick(() => {
-              if (this.$refs.generalInfoTable) {
-                this.$refs.generalInfoTable.setCurrentRow(this.currentRow)
-              }
-            })
-          })
-          .finally(() => {
-            this.isLoadingRecords = false
-          })
-      }, 500)
-    },
-    handleChangeSizePage(pageSize) {
-      this.getListSearchRecords(1, pageSize)
+    return {
+      // Ref
+      isLoadingFields,
+      activeAccordion,
+      isLoadingRecords,
+      // Computed
+      title,
+      labelTable,
+      shortsKey
     }
   }
 }
 </script>
-
 <style lang="scss">
-.general-info-list-container {
-  .general-info-list-query-criteria {
+.accouting-combintantions-list-container {
+  .accouting-combintantions-query-criteria {
     // space between quey criteria and table
     .el-collapse-item__content {
       padding-bottom: 0px !important;
     }
-  }
-  .general-info-table {
-    .el-table__cell {
-      padding: 0px !important;
-      &.is-leaf {
-        padding: 6px !important;
+
+    .button-save {
+      padding: 2px 6px;
+      svg {
+        font-size: 30px !important;
       }
     }
   }
