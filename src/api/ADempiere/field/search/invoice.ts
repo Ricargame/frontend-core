@@ -20,23 +20,46 @@
 
 import { request } from '@/utils/ADempiere/request'
 
-export function requestListOrders() {
+export function requestListOrders({
+  searchValue
+}) {
   return request({
     url: '/field/invoices/orders',
-    method: 'get'
+    method: 'get',
+    params: {
+      search_value: searchValue
+    }
   })
 }
 
-export function requestListBusinessPartners(){
+export function requestListBusinessPartners({
+  searchValue
+}) {
   return request({
     url: '/field/invoices/business-partners',
-    method: 'get'
+    method: 'get',
+    params: {
+      search_value: searchValue
+    }
   })
 }
 
-export function requestListInvoicesInfo(){
+export function requestListInvoicesInfo({
+  pageSize,
+  documentNo,
+  businessPartner,
+  salesTransaction,
+  paid
+}) {
   return request({
     url: '/field/invoices',
-    method: 'get'
+    method: 'get',
+    params: {
+      page_size: pageSize.pageSize,
+      document_no: documentNo,
+      business_partner_id: businessPartner,
+      is_sales_transaction: salesTransaction,
+      is_paid: paid
+    }
   })
 }

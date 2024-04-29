@@ -17,16 +17,13 @@
  */
 
 // API Request Methods
-import { requestListInvoicesInfo } from '@/api/ADempiere/field/search/invoice.ts'
 
 const initState = {
-  fileList: [],
-  attributes: {},
-  filters: {},
-  isLoadeTables: false
+  businnesPartnet: {}
 }
 
 export default {
+
   state: initState,
 
   mutations: {
@@ -36,21 +33,10 @@ export default {
   },
 
   actions: {
-    listFieldsListTableInvoice({ commit, getters }) {
-      return new Promise(resolve => {
-        requestListInvoicesInfo()
-          .then(response => {
-            const label = Object.keys(response.records[0])
-            commit('setFieldsListInvoice', label)
-          })
-      })
-    }
   },
-
   getters: {
     getFieldsListAccountInvoice: (state) => {
       return state.fileList
     }
   }
-
 }

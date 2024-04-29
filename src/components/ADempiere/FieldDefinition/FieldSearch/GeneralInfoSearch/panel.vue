@@ -15,87 +15,164 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
+
 <template>
-  <el-main
-    v-shortkey="shortsKey"
-    v-loading="isLoadingFields"
-    class="accouting-combintantions-list-container"
-    style="padding-top: 0px"
-    @shortkey.native="keyAction"
-  >
-    <el-collapse
-      v-model="activeAccordion"
-      accordion
-      class="accouting-combintantions-query-criteria"
+  <el-collapse class="business-partners-query-criteria">
+    <el-collapse-item
+      :name="ACCORDION_KEY"
+      class="business-partners-query-criteria-collapse"
     >
-      <el-collapse-item name="query-criteria">
-        <template slot="title">
-          {{ title }}
-        </template>
-      </el-collapse-item>
-    </el-collapse>
+      <template slot="title">
+        {{ title }}
+      </template>
+      <el-form label-position="top" size="small" class="form-base">
+        <el-row :gutter="10">
+          <el-col :span="6">
+            <el-form-item label="Documento">
+              <el-input cleable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="Socio del negocio">
+              <el-select
+                v-model="business"
+                clearable
+                filterable
+                size="mini"
+                :filter-method="filterSearchBusinnes"
+                style="margin: 0px;width: 100%;"
+                @visible-change="showList"
+                @change="Refresh"
+              >
+                <el-option
+                  v-for="item in optionsListBussines"
+                  :key="item.id"
+                  :label="item.displayColumn"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6" style="text-align:center">
+            <el-form-item label="Transaccion de venta">
+              <el-switch />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6" style="text-align:center">
+            <el-form-item label="Pagado">
+              <el-switch v-model="paid" @change="Refresh" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="8">
+            <el-form-item label="Descripcion">
+              <el-input cleable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Fecha de factura">
+              <el-input cleable type="date" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Fecha de factura">
+              <el-input cleable type="date" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="8">
+            <el-form-item label="Facura">
+              <el-select
+                v-model="displayValue"
+                clearable
+                filterable
+                size="mini"
+                :filter-method="filterSearchOrder"
+                style="margin: 0px;width: 100%;"
+                @visible-change="showList"
+              >
+                <el-option
+                  v-for="item in optionsListOrder"
+                  :key="item.id"
+                  :label="item.displayColumn"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Gran total">
+              <el-input cleable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="gran total">
+              <el-input cleable />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-collapse-item>
+
     <el-table
       ref=""
       v-loading="isLoadingRecords"
       class=""
       highlight-current-row
-      border
+      :data="listSummary"
+      :border="true"
       fit
-      :height="200"
-      :max-height="400"
+      height="300"
+      style="width: 100%"
       size="mini"
     >
-      <p slot="empty" style="width: 100%">
-        {{ $t("notifications.searchWithOutRecords") }}
-      </p>
-      <!-- <index-column :page-number="recordData.pageNumber" /> -->
+      <index-column />
       <el-table-column
-        v-for="(head, key) in labelTable"
+        v-for="(header, key) in headerList"
         :key="key"
-        :label="head.label"
-        prop="value"
-        header-align="center"
-      >
-        <template slot-scope="scope">
-          <!-- formatted displayed value -->
-          <cell-display-info
-            :parent-uuid="metadata.parentUuid"
-            :container-uuid="uuidForm"
-            :field-attributes="head"
-            :container-manager="containerManagerSearchList"
-            :scope="scope"
-            :data-row="scope.row"
-          />
-        </template>
-      </el-table-column>
+        :align="header.align"
+        :width="header.width"
+        :label="header.label"
+        :prop="header.columnName"
+      />
     </el-table>
-    <el-row class="accouting-combintantions-footer">
-      <!-- <el-col :span="20">
-        <custom-pagination
-          :total="recordData.recordCount"
-          :current-page="recordData.pageNumber"
-          :container-manager="containerManagerSearchList"
-          :handle-change-page-number="setPageNumber"
-          :records-page="recordsList.length"
-          :selection="selection"
-        />
-      </el-col> -->
 
-      <el-col :span="4">
-        <samp style="float: right; padding-top: 4px;">
+    <el-row :gutter="24">
+      <el-col :span="14">
+        <custom-pagination
+          :container-manager="containerManager"
+          :is-showed-selected="false"
+          :total-records="recordCount"
+          :selection="selectedRecords"
+          :page-number="pageNumberValue"
+          :page-size="pageSizeValue"
+          :handle-change-page-number="setPageNumber"
+          :handle-change-page-size="setPageSize"
+        />
+      </el-col>
+      <el-col :span="10">
+        <samp style="float: right; padding-top: 10px;">
+          <el-button
+            type="info"
+            class="button-base-icon"
+            plain
+          >
+            <svg-icon icon-class="layers-clear" />
+          </el-button>
           <el-button
             :loading="isLoadingRecords"
             type="success"
             class="button-base-icon"
             icon="el-icon-refresh-right"
+            @click="Refresh({})"
           />
-
           <el-button
             type="danger"
             class="button-base-icon"
             icon="el-icon-close"
           />
-
           <el-button
             type="primary"
             class="button-base-icon"
@@ -104,25 +181,45 @@
         </samp>
       </el-col>
     </el-row>
-  </el-main>
+  </el-collapse>
 </template>
 
 <script>
-import {
-  computed,
-  // onUpdated,
-  ref
-} from '@vue/composition-api'
+import { defineComponent, computed, ref } from '@vue/composition-api'
 
-import store from '@/store'
+// Constants
+import { GENERAL_INFO_SEARCH_LIST_FORM } from '@/utils/ADempiere/dictionary/field/search/index.ts'
+
+// Components and Mixins
+import CustomPagination from '@/components/ADempiere/DataTable/Components/CustomPagination.vue'
+import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
 
 // Utils and Helper Methods
 import { isEmptyValue, isSameValues } from '@/utils/ADempiere/valueUtils'
+import { formatQuantity } from '@/utils/ADempiere/formatValue/numberFormat'
+// import { formatDate } from '@/utils/ADempiere/formatValue/dateFormat'
 
-export default {
-  name: 'PanelGeneralInfoSearch',
+import { requestListOrders, requestListBusinessPartners, requestListInvoicesInfo } from '@/api/ADempiere/field/search/invoice.ts'
+
+export default defineComponent({
+  name: 'Invoice',
+
+  components: {
+    CustomPagination,
+    IndexColumn
+  },
 
   props: {
+    metadata: {
+      type: Object,
+      default: () => {
+        return {
+          containerUuid: GENERAL_INFO_SEARCH_LIST_FORM,
+          columnName: undefined,
+          elementName: undefined
+        }
+      }
+    },
     containerManager: {
       type: Object,
       default: () => ({
@@ -130,90 +227,270 @@ export default {
         getFieldsLit: () => {},
         setDefaultValues: () => {}
       })
-    },
-    metadata: {
-      type: Object,
-      default: () => {
-        // return {
-        //   // containerUuid: ACCOUTING_COMBINATIONS_LIST_FORM,
-        //   columnName: COLUMN_NAME,
-        // };
-      }
-    },
-    showPopover: {
-      type: Boolean,
-      default: () => false
+    }
+  },
+
+  data() {
+    return {
+      input: ''
     }
   },
 
   setup(props) {
-    // Ref
-    const activeAccordion = ref('query-criteria')
-    const isLoadingFields = ref(false)
+    const ACCORDION_KEY = 'query-criteria'
+    const listSummary = ref([])
+    const displayValue = ref(props.metadata.value)
     const isLoadingRecords = ref(false)
+    const timeOutRecords = ref(null)
+    const paid = ref(false)
+    const business = ref(undefined)
+    const pageNumberValue = ref(0)
+    const pageSizeValue = ref(0)
+    // table
+    const optionsListBussines = ref([])
+    const optionsListOrder = ref([])
 
-    // Computed
+    const headerList = ref([
+      {
+        label: 'Socio del negocio',
+        columnName: 'business_partner',
+        width: '150',
+        align: 'center'
+      },
+      {
+        label: 'Fecha de factura',
+        columnName: 'date_invoiced',
+        width: '140',
+        align: 'center'
+      },
+      {
+        label: 'Documento No.',
+        columnName: 'document_no',
+        width: '120',
+        align: 'center'
+      },
+      {
+        label: 'Moneda',
+        columnName: 'currency',
+        width: '70',
+        align: 'center'
+      },
+      {
+        label: 'Gran Total',
+        columnName: 'grand_total',
+        width: '90',
+        align: 'right'
+      },
+      {
+        label: 'Convertido',
+        columnName: 'converted_amount',
+        width: '90',
+        align: 'right'
+      },
+      {
+        label: 'Abierto',
+        columnName: 'open_amount',
+        width: '90',
+        align: 'center'
+      },
+      {
+        label: 'Termino de pago',
+        columnName: 'payment_term',
+        width: '120',
+        align: 'center'
+      },
+      {
+        label: 'Pagado',
+        columnName: 'is_paid',
+        width: '70',
+        align: 'right'
+      },
+      {
+        label: 'Transaccion de ventas',
+        columnName: 'is_sales_transaction',
+        width: '155',
+        align: 'right'
+      },
+      {
+        label: 'Descripcion',
+        columnName: 'description',
+        width: '100',
+        align: 'center'
+      },
+      {
+        label: 'Referencia de orden de socio del negocio',
+        columnName: 'po_reference',
+        width: '260',
+        align: 'center'
+      }
+    ])
+
+    const recordCount = computed(() => {
+      return 50
+    })
+
+    const titleField = computed(() => {
+      return props.metadata.name
+    })
     const title = computed(() => {
       let title = props.metadata.panelName
       if (
         !isEmptyValue(props.metadata.panelName) &&
         !isSameValues(props.metadata.panelName, props.metadata.name)
-      ) { title += ` (${props.metadata.name})` }
+      ) {
+        title += ` (${props.metadata.name})`
+      }
       return title
     })
 
-    const shortsKey = computed(() => {
-      return {
-        close: ['esc'],
-        refreshList: ['f5']
-      }
-    })
-
-    const fieldsListElements = computed(() => {
-      return store.getters.getFieldsListAccountInvoice
-    })
-    function getAccoutingElements() {
-      const accoutingElements = store.getters.getFieldsListAccountInvoice
-      if (isEmptyValue(accoutingElements)) {
-        store.dispatch('listFieldsListTableInvoice')
-      }
+    function showList(isShow) {
+      if (isShow && isEmptyValue(optionsListBussines.value)) filterSearchBusinnes(displayValue.value)
+      else if (isShow && isEmptyValue(optionsListOrder.value)) filterSearchOrder(displayValue.value)
     }
-    const labelTable = computed(() => {
-      return fieldsListElements.value.map((field) => {
-        return {
-          label: field
-        }
+    function filterSearchBusinnes(searchQuery) {
+      requestListBusinessPartners({
+        searchValue: searchQuery
       })
-    })
-    getAccoutingElements()
+        .then(response => {
+          const { records } = response
+          if (isEmptyValue(records)) return
+          optionsListBussines.value = records.map(list => {
+            return {
+              ...list,
+              displayColumn: list.values.DisplayColumn
+            }
+          })
+        })
+    }
 
+    function filterSearchOrder(searchQuery) {
+      requestListOrders({
+        searchValue: searchQuery
+      })
+        .then(response => {
+          const { records } = response
+          if (isEmptyValue(records)) return
+          optionsListOrder.value = records.map(list => {
+            return {
+              ...list,
+              displayColumn: list.values.DisplayColumn
+            }
+          })
+        })
+    }
+    function Refresh(pageSize = pageSizeValue.value) {
+      clearTimeout(timeOutRecords.value)
+      timeOutRecords.value = setTimeout(() => {
+        isLoadingRecords.value = true
+        requestListInvoicesInfo({
+          pageSize,
+          page_token: pageNumberValue.value,
+          businessPartner: business.value,
+          paid: paid.value
+        })
+          .then(response => {
+            const { records } = response
+            listSummary.value = records.map(list => {
+              return {
+                ...list,
+                business_partner: list.business_partner,
+                date_invoiced: list.date_invoiced,
+                document_no: list.document_no,
+                currency: list.currency,
+                grand_total: formatQuantity({ value: list.grand_total }),
+                converted_amount: formatQuantity({ value: list.converted_amount }),
+                open_amount: formatQuantity({ value: list.open_amount }),
+                payment_term: list.payment_term,
+                is_paid: list.is_paid ? 1 : 0,
+                is_sales_transaction: list.is_sales_transaction ? 1 : 0,
+                description: list.description,
+                po_reference: list.po_reference
+              }
+            })
+          })
+          .finally(() => {
+            isLoadingRecords.value = false
+          })
+      }, 500)
+    }
+
+    function setPageNumber(pageNumber) {
+      Refresh({
+        pageNumber
+      })
+    }
+    function setPageSize(pageSize) {
+      Refresh({
+        pageSize
+      })
+    }
+
+    const pageNumber = computed(() => {
+      return pageNumberValue.value.pageNumber
+    })
+
+    const pageSize = computed(() => {
+      return pageSizeValue.value.pageSize
+    })
+
+    Refresh()
     return {
-      // Ref
-      isLoadingFields,
-      activeAccordion,
+      //
+      paid,
+      business,
+      pageNumberValue,
+      pageSizeValue,
+      //
+      ACCORDION_KEY,
+      optionsListBussines,
+      optionsListOrder,
+      displayValue,
+      listSummary,
+      headerList,
       isLoadingRecords,
       // Computed
       title,
-      labelTable,
-      shortsKey
+      titleField,
+      recordCount,
+      // Methods
+      showList,
+      filterSearchBusinnes,
+      filterSearchOrder,
+      Refresh,
+      setPageNumber,
+      setPageSize,
+      pageNumber,
+      pageSize
     }
   }
-}
+})
 </script>
-<style lang="scss">
-.accouting-combintantions-list-container {
-  .accouting-combintantions-query-criteria {
-    // space between quey criteria and table
-    .el-collapse-item__content {
-      padding-bottom: 0px !important;
+
+<style lang='scss'>
+.business-partners-query-criteria {
+  .business-partners-query-criteria-collapse {
+    .el-form-item {
+      &.el-form-item--mini {
+        margin-bottom: 6px;
+      }
+    }
+    .el-collapse-item__header {
+      height: 40px;
+      line-height: 40px;
     }
 
-    .button-save {
-      padding: 2px 6px;
-      svg {
-        font-size: 30px !important;
+    .el-collapse-item__wrap {
+      .el-collapse-item__content {
+        padding-bottom: 5px;
       }
     }
   }
 }
+.el-row {
+  margin-bottom: 20px;
+}
+.el-popover{
+  width:1200px !important
+}
+
 </style>
