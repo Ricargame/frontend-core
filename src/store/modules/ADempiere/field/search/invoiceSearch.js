@@ -16,40 +16,72 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Vue from 'vue'
-import { requestListBusinessPartners } from '@/api/ADempiere/field/search/invoice.ts'
+import { requestListInvoicesInfo } from '@/api/ADempiere/field/search/invoice.ts'
 
 const initState = {
-  businessPartner: {}
+  InvociesInfo: {},
+  CountInvocies: 0
 }
 
 export default {
   state: initState,
 
   mutations: {
-    setBusinessParnet(state, {
-      businessPartner
-    }) {
-      Vue.set(state.businessPartner, businessPartner)
+    setInvociesInfo(state, element) {
+      state.InvociesInfo = element
+    },
+    setCountInfo(state, count) {
+      state.CountInvocies = count
     }
   },
 
-  action: {
-    searchBusinessPartners({ commit }) {
+  actions: {
+    searchInvociesInfos({ commit }, {
+      page_size,
+      page_token,
+      document_no,
+      is_sales_transaction,
+      business_partner_id,
+      is_paid,
+      description,
+      invoice_date_from,
+      invoice_date_to,
+      order_id,
+      grand_total_from,
+      grand_total_to
+    }) {
       return new Promise(resolve => {
-        requestListBusinessPartners()
+        requestListInvoicesInfo({
+          page_size,
+          page_token,
+          document_no,
+          is_sales_transaction,
+          business_partner_id,
+          is_paid,
+          description,
+          invoice_date_from,
+          invoice_date_to,
+          order_id,
+          grand_total_from,
+          grand_total_to
+        })
           .then(response => {
             const { records } = response
-            const recordsList = records.map((list) => {
-              return {
-                ...list,
-                displayColumn: list.values.DisplayColumn
-              }
-            })
-            commit('setBusinessParnet', recordsList)
-            resolve(recordsList)
+            commit('setInvociesInfo', records)
+
+            commit('setCountInfo', records.length)
+            resolve(records)
           })
       })
+    }
+  },
+
+  getters: {
+    getInvoicesSearchFieldRecordsList: (state) => {
+      return state.InvociesInfo
+    },
+    getCountInvocies: (state) => {
+      return state.CountInvocies
     }
   }
 }

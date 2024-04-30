@@ -21,9 +21,13 @@
     <el-col :span="14">
       <custom-pagination
         :container-manager="containerManager"
-        :is-showed-selected="false"
         :total-records="recordCount"
+        :is-showed-selected="false"
         :selection="selectedRecords"
+        :page-number="pageNumber"
+        :page-size="pageSize"
+        :handle-change-page-number="setPageNumber"
+        :handle-change-page-size="setPageSize"
       />
     </el-col>
     <el-col :span="10">
@@ -35,6 +39,7 @@
           type="success"
           class="button-base-icon"
           icon="el-icon-refresh-right"
+          @click="searchRecordsList({})"
         />
         <el-button
           type="danger"
@@ -52,11 +57,15 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { computed, defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 // Components and Mixins
 import CustomPagination from '@/components/ADempiere/DataTable/Components/CustomPagination.vue'
 import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
+
+// Utils and Helper Methods
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 
 export default defineComponent({
   name: 'PanelFooter',
@@ -64,24 +73,66 @@ export default defineComponent({
   components: {
     CustomPagination,
     IndexColumn
-  }
+  },
+  props: {
+    containerManager: {
+      type: Object,
+      default: () => ({
+        actionPerformed: () => {},
+        getFieldsLit: () => {},
+        setDefaultValues: () => {}
+      })
+    }
+  },
 
-  // setup(props) {
-  //   function setPageNumber(pageNumber) {
-  //     loadRecordsList({
-  //       pageNumber,
-  //     });
-  //   }
-  //   function setPageSize(pageSize) {
-  //     loadRecordsList({
-  //       pageSize,
-  //     });
-  //   }
-  //   return {
-  //     //
-  //     setPageNumber,
-  //     setPageSize,
-  //   };
-  // },
+  setup() {
+    const invoicesData = ref(0)
+    const currentRow = ref(0)
+
+    function searchRecordsList() {
+      store.dispatch('searchInvociesInfos')
+    }
+
+    const selectedRecords = computed(() => {
+      if (!isEmptyValue(currentRow.value)) {
+        return 1
+      }
+      return 0
+    })
+
+    const recordCount = computed(() => {
+      return store.getters.getCountInvocies
+    })
+
+    const pageNumber = computed(() => {
+      return invoicesData.value.pageNumber
+    })
+
+    const pageSize = computed(() => {
+      return invoicesData.value.pageSize
+    })
+    function setPageNumber(page_token) {
+      store.dispatch('searchInvociesInfos', {
+        page_token
+      })
+    }
+    function setPageSize(page_size) {
+      store.dispatch('searchInvociesInfos', {
+        page_size
+      })
+    }
+
+    return {
+      //
+      searchRecordsList,
+      setPageNumber,
+      setPageSize,
+      //
+      recordCount,
+      pageNumber,
+      pageSize,
+      selectedRecords
+    }
+  }
 })
 </script>

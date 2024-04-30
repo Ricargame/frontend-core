@@ -18,14 +18,13 @@
 <template>
   <el-form-item label="Socio del negocio">
     <el-select
-      v-model="business"
+      v-model="businessPartnerField"
       clearable
       filterable
       size="mini"
       :filter-method="filterSearchBusinnes"
       style="margin: 0px; width: 100%"
       @visible-change="showList"
-      @change="Refresh"
     >
       <el-option
         v-for="item in optionsListBussines"
@@ -38,10 +37,58 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+
+import {
+  defineComponent, ref
+} from '@vue/composition-api'
+
+// Utils and Helper Methods
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+
+//
+import { requestListBusinessPartners } from '@/api/ADempiere/field/search/invoice.ts'
 
 export default defineComponent({
-  name: 'BusinessPartnerField'
+  name: 'BusinessPartnerField',
 
+  data() {
+    return {
+      businessPartnerField: ''
+    }
+  },
+
+  setup() {
+    const optionsListBussines = ref([])
+    const businessPartner = ref(null)
+
+    function showList(isShow) {
+      if (isShow && isEmptyValue(optionsListBussines.value)) { filterSearchBusinnes({}) }
+    }
+
+    function filterSearchBusinnes(
+      searchQuery
+    ) {
+      requestListBusinessPartners({
+        searchValue: searchQuery
+      })
+        .then(response => {
+          const { records } = response
+          optionsListBussines.value = records.map((list) => {
+            return {
+              ...list,
+              displayColumn: list.values.DisplayColumn
+            }
+          })
+        })
+    }
+
+    return {
+      optionsListBussines,
+      businessPartner,
+      //
+      filterSearchBusinnes,
+      showList
+    }
+  }
 })
 </script>

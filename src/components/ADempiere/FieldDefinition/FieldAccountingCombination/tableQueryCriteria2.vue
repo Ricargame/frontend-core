@@ -266,7 +266,6 @@ export default defineComponent({
     const fieldsListElements = computed(() => {
       return store.getters.getFieldsListAccount
     })
-    console.log(fieldsListElements)
     const acctSchemaId = computed(() => {
       return store.getters.getValueOfField({
         containerUuid: uuidForm.value,

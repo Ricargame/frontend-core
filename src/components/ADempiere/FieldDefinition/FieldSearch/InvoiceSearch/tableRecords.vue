@@ -18,11 +18,10 @@
 <template>
   <div>
     <el-table
-      ref=""
-      class=""
       highlight-current-row
       :border="true"
       fit
+      :data="recordsList"
       height="300"
       style="width: 100%"
       size="mini"
@@ -41,10 +40,16 @@
 </template>
 
 <script>
-import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
+
+import { computed, defineComponent, ref } from '@vue/composition-api'
 
 // Components and Mixins
 import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
+
+// Utils and Helper Methods
+import { formatQuantity } from '@/utils/ADempiere/formatValue/numberFormat'
+import { convertBooleanToString } from '@/utils/ADempiere/formatValue/booleanFormat.js'
 
 export default defineComponent({
   name: 'TableRecords',
@@ -54,6 +59,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const listSummary = []
+    const recordsList = []
     const headerList = ref([
       {
         label: 'Socio del negocio',
@@ -129,8 +136,34 @@ export default defineComponent({
       }
     ])
 
+    const RequestrecordsList = computed(() => {
+      const recordsList = store.getters.getInvoicesSearchFieldRecordsList
+      return recordsList.map((list) => {
+        return {
+          ...list,
+          business_partner: list.business_partner,
+          date_invoiced: list.date_invoiced,
+          document_no: list.document_no,
+          currency: list.currency,
+          grand_total: formatQuantity({ value: list.grand_total }),
+          converted_amount: formatQuantity({
+            value: list.converted_amount
+          }),
+          open_amount: formatQuantity({ value: list.open_amount }),
+          payment_term: list.payment_term,
+          is_paid: convertBooleanToString(list.is_paid),
+          is_sales_transaction: convertBooleanToString(list.is_sales_transaction),
+          description: list.description,
+          po_reference: list.po_reference
+        }
+      })
+    })
+
     return {
-      headerList
+      recordsList,
+      RequestrecordsList,
+      headerList,
+      listSummary
     }
   }
 })

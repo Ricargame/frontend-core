@@ -20,6 +20,7 @@ import language from '@/lang'
 
 // Utils and Helper Methods
 import { removeQuotationMark } from '@/utils/ADempiere/formatValue/stringFormat'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 
 /**
  * true value stored on data base as string `Y`
@@ -107,4 +108,18 @@ export const convertStringToBoolean = (valueToParsed) => {
   }
 
   return valReturn
+}
+
+/**
+ * Convert Number to Boolean value
+ * @returns {boolean}
+ */
+
+export function numberToBoolean({
+  value
+}) {
+  if (isEmptyValue(value)) {
+    return false
+  }
+  return convertBooleanToTranslationLang(Boolean(value))
 }

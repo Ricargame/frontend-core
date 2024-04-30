@@ -17,8 +17,9 @@
 -->
 
 <template>
-  <el-collapse accordion class="business-partners-query-criteria">
+  <el-collapse class="business-partners-query-criteria">
     <el-collapse-item
+      v-model="activeNames"
       :name="ACCORDION_KEY"
       class="business-partners-query-criteria-collapse"
     >
@@ -103,6 +104,11 @@ export default defineComponent({
     GrandTotalField
   },
 
+  data() {
+    return {
+      activeNames: true
+    }
+  },
   props: {
     metadata: {
       type: Object,
@@ -140,7 +146,6 @@ export default defineComponent({
 
     return {
       ACCORDION_KEY,
-
       //
       title
     }

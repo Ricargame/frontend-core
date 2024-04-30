@@ -45,21 +45,35 @@ export function requestListBusinessPartners({
 }
 
 export function requestListInvoicesInfo({
-  pageSize,
-  documentNo,
-  businessPartner,
-  salesTransaction,
-  paid
+  page_size,
+  page_token,
+  document_no,
+  business_partner_id,
+  is_sales_transaction,
+  is_paid,
+  description,
+  invoice_date_from,
+  invoice_date_to,
+  order_id,
+  grand_total_from,
+  grand_total_to
 }) {
   return request({
     url: '/field/invoices',
     method: 'get',
     params: {
-      page_size: pageSize.pageSize,
-      document_no: documentNo,
-      business_partner_id: businessPartner,
-      is_sales_transaction: salesTransaction,
-      is_paid: paid
+      page_size,
+      page_token,
+      document_no,
+      is_sales_transaction,
+      business_partner_id,
+      is_paid,
+      description,
+      invoice_date_from,
+      invoice_date_to,
+      order_id,
+      grand_total_from,
+      grand_total_to
     }
   })
 }

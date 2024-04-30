@@ -20,6 +20,7 @@
     label="Gran total"
   >
     <el-input
+      v-model="grandTotalField"
       clearable
     />
   </el-form-item>
@@ -29,6 +30,13 @@
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
-  name: 'GrandTotalField'
+  name: 'GrandTotalField',
+
+  data() {
+    return {
+      grandTotalField: ''
+    }
+  }
+
 })
 </script>

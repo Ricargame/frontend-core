@@ -20,6 +20,7 @@
     label="Descricion"
   >
     <el-input
+      v-model="descriptionFieldValue"
       clearable
     />
   </el-form-item>
@@ -29,6 +30,11 @@
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
-  name: 'DescriptionField'
+  name: 'DescriptionField',
+  data() {
+    return {
+      descriptionFieldValue: ''
+    }
+  }
 })
 </script>

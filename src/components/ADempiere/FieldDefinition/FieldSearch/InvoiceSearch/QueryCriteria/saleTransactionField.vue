@@ -17,19 +17,7 @@
 -->
 <template>
   <el-form-item label="Transaccion de venta">
-    <el-select
-      clearable
-      filterable
-      size="mini"
-      style="margin: 0px; width: 100%"
-    >
-      <el-option
-        v-for="(option, key) in YES_NO_OPTIONS_LIST"
-        :key="key"
-        :value="option.stringValue"
-        :label="option.displayValue"
-      />
-    </el-select>
+    <el-checkbox v-model="saleTransactionField" />
   </el-form-item>
 </template>
 
@@ -37,14 +25,13 @@
 import { defineComponent } from '@vue/composition-api'
 
 // Constants
-import { YES_NO_OPTIONS_LIST } from '@/utils/ADempiere/dictionary/field/yesNo'
 
 export default defineComponent({
   name: 'saleTransactionField',
 
-  setup(props) {
+  data() {
     return {
-      YES_NO_OPTIONS_LIST
+      saleTransactionField: false
     }
   }
 })

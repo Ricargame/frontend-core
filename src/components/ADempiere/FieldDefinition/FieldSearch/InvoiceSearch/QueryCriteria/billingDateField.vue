@@ -18,6 +18,7 @@
 <template>
   <el-form-item label="Fecha de factura">
     <el-date-picker
+      v-model="billingDateFieldValue"
       type="datetime"
       placeholder="Select date and time"
     />
@@ -28,6 +29,12 @@
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
-  name: 'BillingDateField'
+  name: 'BillingDateField',
+
+  data() {
+    return {
+      billingDateFieldValue: false
+    }
+  }
 })
 </script>

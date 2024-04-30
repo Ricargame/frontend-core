@@ -16,19 +16,75 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-form-item
-    label="Factura"
-  >
-    <el-input
+  <el-form-item label="Factura">
+    <el-select
+      v-model="invoiceField"
       clearable
-    />
+      filterable
+      size="mini"
+      :filter-method="filterSearchOrder"
+      style="margin: 0px; width: 100%"
+      @visible-change="showList"
+    >
+      <el-option
+        v-for="item in optionsListOrder"
+        :key="item.id"
+        :label="item.displayColumn"
+        :value="item.id"
+      />
+    </el-select>
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import {
+  defineComponent, ref
+} from '@vue/composition-api'
+
+// Utils and Helper Methods
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+
+//
+import { requestListOrders } from '@/api/ADempiere/field/search/invoice.ts'
 
 export default defineComponent({
-  name: 'InvoiceField'
+  name: 'InvoiceField',
+
+  data() {
+    return {
+      invoiceField: ''
+    }
+  },
+  setup() {
+    const optionsListOrder = ref([])
+
+    function showList(isShow) {
+      if (isShow && isEmptyValue(optionsListOrder.value)) { filterSearchOrder({}) }
+    }
+
+    function filterSearchOrder(
+      searchQuery
+    ) {
+      requestListOrders({
+        searchValue: searchQuery
+      })
+        .then(response => {
+          const { records } = response
+          optionsListOrder.value = records.map((list) => {
+            return {
+              ...list,
+              displayColumn: list.values.DisplayColumn
+            }
+          })
+        })
+    }
+
+    return {
+      optionsListOrder,
+      //
+      filterSearchOrder,
+      showList
+    }
+  }
 })
 </script>

@@ -20,6 +20,7 @@
     label="Documento"
   >
     <el-input
+      v-model="documentField"
       clearable
     />
   </el-form-item>
@@ -29,6 +30,13 @@
 import { defineComponent } from '@vue/composition-api'
 
 export default defineComponent({
-  name: 'DocumentField'
+  name: 'DocumentField',
+
+  data() {
+    return {
+      documentField: ''
+    }
+  }
+
 })
 </script>
