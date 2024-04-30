@@ -16,30 +16,36 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-main
-    class="business-partners-container"
-  >
-    <query-criteria />
-
-    <table-records />
-
-    <panel-footer />
-  </el-main>
+  <el-form-item label="Pagado">
+    <el-select
+      clearable
+      filterable
+      size="mini"
+      style="margin: 0px; width: 100%"
+    >
+      <el-option
+        v-for="(option, key) in YES_NO_OPTIONS_LIST"
+        :key="key"
+        :value="option.stringValue"
+        :label="option.displayValue"
+      />
+    </el-select>
+  </el-form-item>
 </template>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
-import QueryCriteria from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/QueryCriteria'
-import TableRecords from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/tableRecords.vue'
-import PanelFooter from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/panelFooter.vue'
+
+// Constants
+import { YES_NO_OPTIONS_LIST } from '@/utils/ADempiere/dictionary/field/yesNo'
 
 export default defineComponent({
-  name: 'panel',
-  components: {
-    QueryCriteria,
-    TableRecords,
-    PanelFooter
+  name: 'PaidField',
+
+  setup(props) {
+    return {
+      YES_NO_OPTIONS_LIST
+    }
   }
 })
-
 </script>

@@ -16,30 +16,18 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-main
-    class="business-partners-container"
-  >
-    <query-criteria />
-
-    <table-records />
-
-    <panel-footer />
-  </el-main>
+  <el-form-item label="Fecha de factura">
+    <el-date-picker
+      type="datetime"
+      placeholder="Select date and time"
+    />
+  </el-form-item>
 </template>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
-import QueryCriteria from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/QueryCriteria'
-import TableRecords from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/tableRecords.vue'
-import PanelFooter from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/panelFooter.vue'
 
 export default defineComponent({
-  name: 'panel',
-  components: {
-    QueryCriteria,
-    TableRecords,
-    PanelFooter
-  }
+  name: 'BillingDateField'
 })
-
 </script>

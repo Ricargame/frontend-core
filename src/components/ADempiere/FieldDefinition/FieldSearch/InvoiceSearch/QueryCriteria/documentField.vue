@@ -16,30 +16,19 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-main
-    class="business-partners-container"
+  <el-form-item
+    label="Documento"
   >
-    <query-criteria />
-
-    <table-records />
-
-    <panel-footer />
-  </el-main>
+    <el-input
+      clearable
+    />
+  </el-form-item>
 </template>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
-import QueryCriteria from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/QueryCriteria'
-import TableRecords from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/tableRecords.vue'
-import PanelFooter from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/panelFooter.vue'
 
 export default defineComponent({
-  name: 'panel',
-  components: {
-    QueryCriteria,
-    TableRecords,
-    PanelFooter
-  }
+  name: 'DocumentField'
 })
-
 </script>

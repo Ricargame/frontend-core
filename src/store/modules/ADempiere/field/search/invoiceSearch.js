@@ -16,27 +16,40 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// API Request Methods
+import Vue from 'vue'
+import { requestListBusinessPartners } from '@/api/ADempiere/field/search/invoice.ts'
 
 const initState = {
-  businnesPartnet: {}
+  businessPartner: {}
 }
 
 export default {
-
   state: initState,
 
   mutations: {
-    setFieldsListInvoice(state, fieldsListAccount) {
-      state.fileList = fieldsListAccount
+    setBusinessParnet(state, {
+      businessPartner
+    }) {
+      Vue.set(state.businessPartner, businessPartner)
     }
   },
 
-  actions: {
-  },
-  getters: {
-    getFieldsListAccountInvoice: (state) => {
-      return state.fileList
+  action: {
+    searchBusinessPartners({ commit }) {
+      return new Promise(resolve => {
+        requestListBusinessPartners()
+          .then(response => {
+            const { records } = response
+            const recordsList = records.map((list) => {
+              return {
+                ...list,
+                displayColumn: list.values.DisplayColumn
+              }
+            })
+            commit('setBusinessParnet', recordsList)
+            resolve(recordsList)
+          })
+      })
     }
   }
 }

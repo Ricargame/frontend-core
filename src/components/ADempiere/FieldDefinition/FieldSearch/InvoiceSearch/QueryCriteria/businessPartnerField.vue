@@ -16,30 +16,32 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-main
-    class="business-partners-container"
-  >
-    <query-criteria />
-
-    <table-records />
-
-    <panel-footer />
-  </el-main>
+  <el-form-item label="Socio del negocio">
+    <el-select
+      v-model="business"
+      clearable
+      filterable
+      size="mini"
+      :filter-method="filterSearchBusinnes"
+      style="margin: 0px; width: 100%"
+      @visible-change="showList"
+      @change="Refresh"
+    >
+      <el-option
+        v-for="item in optionsListBussines"
+        :key="item.id"
+        :label="item.displayColumn"
+        :value="item.id"
+      />
+    </el-select>
+  </el-form-item>
 </template>
 
 <script>
 import { defineComponent } from '@vue/composition-api'
-import QueryCriteria from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/QueryCriteria'
-import TableRecords from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/tableRecords.vue'
-import PanelFooter from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/panelFooter.vue'
 
 export default defineComponent({
-  name: 'panel',
-  components: {
-    QueryCriteria,
-    TableRecords,
-    PanelFooter
-  }
-})
+  name: 'BusinessPartnerField'
 
+})
 </script>
