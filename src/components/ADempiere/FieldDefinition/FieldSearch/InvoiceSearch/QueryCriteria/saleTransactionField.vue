@@ -16,22 +16,39 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-form-item label="Transaccion de venta">
-    <el-checkbox v-model="saleTransactionField" />
+  <el-form-item
+    label="Transaccion de venta"
+    style="text-align: center; align-items: center;"
+  >
+    <el-checkbox
+      v-model="saleTransactionField"
+      @change="currentValue"
+    />
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 // Constants
 
 export default defineComponent({
   name: 'saleTransactionField',
 
-  data() {
+  setup() {
+    const saleTransactionField = ref(false)
+
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        is_sales_transaction: saleTransactionField.value
+      })
+    }
+
     return {
-      saleTransactionField: false
+      saleTransactionField,
+      //
+      currentValue
     }
   }
 })

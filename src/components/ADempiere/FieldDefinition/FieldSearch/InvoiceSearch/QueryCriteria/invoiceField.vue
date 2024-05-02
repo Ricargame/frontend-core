@@ -16,15 +16,16 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-form-item label="Factura">
+  <el-form-item label="Orden de venta">
     <el-select
-      v-model="invoiceField"
+      v-model="saleOrderField"
       clearable
       filterable
       size="mini"
       :filter-method="filterSearchOrder"
       style="margin: 0px; width: 100%"
       @visible-change="showList"
+      @change="currentValue"
     >
       <el-option
         v-for="item in optionsListOrder"
@@ -43,6 +44,7 @@ import {
 
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+import store from '@/store'
 
 //
 import { requestListOrders } from '@/api/ADempiere/field/search/invoice.ts'
@@ -50,14 +52,9 @@ import { requestListOrders } from '@/api/ADempiere/field/search/invoice.ts'
 export default defineComponent({
   name: 'InvoiceField',
 
-  data() {
-    return {
-      invoiceField: ''
-    }
-  },
   setup() {
     const optionsListOrder = ref([])
-
+    const saleOrderField = ref()
     function showList(isShow) {
       if (isShow && isEmptyValue(optionsListOrder.value)) { filterSearchOrder({}) }
     }
@@ -79,11 +76,19 @@ export default defineComponent({
         })
     }
 
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        order_id: saleOrderField.value
+      })
+    }
+
     return {
       optionsListOrder,
+      saleOrderField,
       //
       filterSearchOrder,
-      showList
+      showList,
+      currentValue
     }
   }
 })

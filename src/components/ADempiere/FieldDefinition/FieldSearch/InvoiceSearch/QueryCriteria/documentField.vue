@@ -22,21 +22,32 @@
     <el-input
       v-model="documentField"
       clearable
+      @input="currentValue"
     />
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 export default defineComponent({
   name: 'DocumentField',
 
-  data() {
+  setup() {
+    const documentField = ref('')
+
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        document_no: documentField.value
+      })
+    }
+
     return {
-      documentField: ''
+      documentField,
+      //
+      currentValue
     }
   }
-
 })
 </script>

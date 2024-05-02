@@ -18,6 +18,7 @@
 <template>
   <div>
     <el-table
+      v-loading="isLoadingRecords"
       highlight-current-row
       :border="true"
       fit
@@ -50,6 +51,7 @@ import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn
 // Utils and Helper Methods
 import { formatQuantity } from '@/utils/ADempiere/formatValue/numberFormat'
 import { convertBooleanToString } from '@/utils/ADempiere/formatValue/booleanFormat.js'
+import { isEmptyValue } from '@/utils/ADempiere'
 
 export default defineComponent({
   name: 'TableRecords',
@@ -60,7 +62,9 @@ export default defineComponent({
 
   setup(props) {
     const listSummary = []
-    const recordsList = []
+    const isLoadingRecords = ref(false)
+
+    const timeOutRecords = ref(null)
     const headerList = ref([
       {
         label: 'Socio del negocio',
@@ -136,9 +140,11 @@ export default defineComponent({
       }
     ])
 
-    const RequestrecordsList = computed(() => {
-      const recordsList = store.getters.getInvoicesSearchFieldRecordsList
-      return recordsList.map((list) => {
+    const recordsList = computed(() => {
+      const invoiceList = store.getters.getInvoicesSearchFieldRecordsList
+      setTime()
+      if (isEmptyValue(invoiceList)) return []
+      return invoiceList.map((list) => {
         return {
           ...list,
           business_partner: list.business_partner,
@@ -146,9 +152,7 @@ export default defineComponent({
           document_no: list.document_no,
           currency: list.currency,
           grand_total: formatQuantity({ value: list.grand_total }),
-          converted_amount: formatQuantity({
-            value: list.converted_amount
-          }),
+          converted_amount: formatQuantity({ value: list.converted_amount }),
           open_amount: formatQuantity({ value: list.open_amount }),
           payment_term: list.payment_term,
           is_paid: convertBooleanToString(list.is_paid),
@@ -159,11 +163,28 @@ export default defineComponent({
       })
     })
 
+    function setTime() {
+      clearTimeout(timeOutRecords.value)
+      isLoadingRecords.value = true
+      timeOutRecords.value = setTimeout(() => {
+        isLoadingRecords.value = false
+      }, 1000)
+    }
+
+    function searchRecordsList() {
+      store.dispatch('searchInvociesInfos', {})
+    }
+
+    searchRecordsList()
     return {
+      //
+      isLoadingRecords,
+      //
       recordsList,
-      RequestrecordsList,
       headerList,
-      listSummary
+      listSummary,
+      //
+      searchRecordsList
     }
   }
 })

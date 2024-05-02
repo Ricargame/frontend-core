@@ -16,20 +16,35 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-form-item label="Pagado">
-    <el-checkbox v-model="paidField" />
+  <el-form-item
+    label="Pagado"
+    style="align-items: center; text-align: center;"
+  >
+    <el-checkbox
+      v-model="paidField"
+      @change="currentValue"
+    />
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 export default defineComponent({
   name: 'PaidField',
-  data() {
+  setup() {
+    const paidField = ref(false)
+
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        is_paid: paidField.value
+      })
+    }
     return {
-      paidField: false
+      paidField,
+      //
+      currentValue
     }
   }
 })
-</script>

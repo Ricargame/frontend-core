@@ -25,6 +25,7 @@
       :filter-method="filterSearchBusinnes"
       style="margin: 0px; width: 100%"
       @visible-change="showList"
+      @change="currentValue"
     >
       <el-option
         v-for="item in optionsListBussines"
@@ -42,24 +43,21 @@ import {
   defineComponent, ref
 } from '@vue/composition-api'
 
+// import store from '@/store'
+
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 
 //
 import { requestListBusinessPartners } from '@/api/ADempiere/field/search/invoice.ts'
+import store from '@/store'
 
 export default defineComponent({
   name: 'BusinessPartnerField',
 
-  data() {
-    return {
-      businessPartnerField: ''
-    }
-  },
-
   setup() {
     const optionsListBussines = ref([])
-    const businessPartner = ref(null)
+    const businessPartnerField = ref('')
 
     function showList(isShow) {
       if (isShow && isEmptyValue(optionsListBussines.value)) { filterSearchBusinnes({}) }
@@ -82,9 +80,17 @@ export default defineComponent({
         })
     }
 
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        business_partner_id: businessPartnerField.value
+      })
+    }
+
     return {
       optionsListBussines,
-      businessPartner,
+      businessPartnerField,
+      //
+      currentValue,
       //
       filterSearchBusinnes,
       showList

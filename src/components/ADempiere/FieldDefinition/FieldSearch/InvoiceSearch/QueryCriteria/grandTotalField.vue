@@ -18,25 +18,49 @@
 <template>
   <el-form-item
     label="Gran total"
+    style="text-align: center; align-items: center; margin-left: 20%;"
   >
-    <el-input
-      v-model="grandTotalField"
-      clearable
-    />
+    <div style="display: flex;">
+      <el-input
+        v-model="grandTotalFieldFrom"
+        clearable
+        @input="currentValue"
+      />
+      <b style="color: #c0c4cc;padding: 0px 5px;font-weight: bold;">
+        {{ '-' }}
+      </b>
+      <el-input
+        v-model="grandTotalFieldTo"
+        clearable
+        @input="currentValue"
+      />
+    </div>
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 export default defineComponent({
   name: 'GrandTotalField',
+  setup() {
+    const grandTotalFieldFrom = ref(null)
+    const grandTotalFieldTo = ref(null)
 
-  data() {
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        grand_total_from: grandTotalFieldFrom.value,
+        grand_total_to: grandTotalFieldTo.value
+      })
+    }
+
     return {
-      grandTotalField: ''
+      grandTotalFieldFrom,
+      grandTotalFieldTo,
+      //
+      currentValue
     }
   }
-
 })
 </script>

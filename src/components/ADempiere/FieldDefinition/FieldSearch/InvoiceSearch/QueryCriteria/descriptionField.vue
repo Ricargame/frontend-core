@@ -22,19 +22,33 @@
     <el-input
       v-model="descriptionFieldValue"
       clearable
+      @input="currentValue"
     />
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 export default defineComponent({
   name: 'DescriptionField',
-  data() {
+
+  setup() {
+    const descriptionFieldValue = ref('')
+
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        description: descriptionFieldValue.value
+      })
+    }
+
     return {
-      descriptionFieldValue: ''
+      descriptionFieldValue,
+      //
+      currentValue
     }
   }
+
 })
 </script>

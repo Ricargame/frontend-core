@@ -32,7 +32,6 @@ import { defineComponent } from '@vue/composition-api'
 import QueryCriteria from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/QueryCriteria'
 import TableRecords from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/tableRecords.vue'
 import PanelFooter from '@/components/ADempiere/FieldDefinition/FieldSearch/InvoiceSearch/panelFooter.vue'
-import store from '@/store'
 
 export default defineComponent({
   name: 'panel',
@@ -40,17 +39,6 @@ export default defineComponent({
     QueryCriteria,
     TableRecords,
     PanelFooter
-  },
-
-  setup(props) {
-    function searchRecordsList() {
-      store.dispatch('searchInvociesInfos', {})
-    }
-
-    searchRecordsList()
-    return {
-      searchRecordsList
-    }
   }
 })
 

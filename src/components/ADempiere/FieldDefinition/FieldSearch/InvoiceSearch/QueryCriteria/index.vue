@@ -17,9 +17,8 @@
 -->
 
 <template>
-  <el-collapse class="business-partners-query-criteria">
+  <el-collapse v-model="ACCORDION_KEY" class="business-partners-query-criteria">
     <el-collapse-item
-      v-model="activeNames"
       :name="ACCORDION_KEY"
       class="business-partners-query-criteria-collapse"
     >
@@ -49,10 +48,7 @@
           <el-col :span="8">
             <description-field />
           </el-col>
-          <el-col :span="8">
-            <billing-date-field />
-          </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <billing-date-field />
           </el-col>
         </el-row>
@@ -60,10 +56,7 @@
           <el-col :span="8">
             <invoice-field />
           </el-col>
-          <el-col :span="8">
-            <grand-total-field />
-          </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <grand-total-field />
           </el-col>
         </el-row>
@@ -102,12 +95,6 @@ export default defineComponent({
     DescriptionField,
     InvoiceField,
     GrandTotalField
-  },
-
-  data() {
-    return {
-      activeNames: true
-    }
   },
   props: {
     metadata: {

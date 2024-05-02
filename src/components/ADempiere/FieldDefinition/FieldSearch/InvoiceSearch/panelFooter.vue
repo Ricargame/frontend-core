@@ -90,7 +90,9 @@ export default defineComponent({
     const currentRow = ref(0)
 
     function searchRecordsList() {
-      store.dispatch('searchInvociesInfos')
+      store.dispatch('searchInvociesInfos', {
+        page_size: 0
+      })
     }
 
     const selectedRecords = computed(() => {

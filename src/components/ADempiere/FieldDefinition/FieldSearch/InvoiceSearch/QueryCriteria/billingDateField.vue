@@ -16,25 +16,58 @@
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
 <template>
-  <el-form-item label="Fecha de factura">
-    <el-date-picker
-      v-model="billingDateFieldValue"
-      type="datetime"
-      placeholder="Select date and time"
-    />
+  <el-form-item
+    label="Fecha de factura"
+    style="text-align: center; align-items: center; margin-left: 20%;"
+  >
+    <div class="date-picker-container">
+      <el-date-picker
+        v-model="billingDateFieldFrom"
+        type="datetime"
+        placeholder="Select date and time"
+        @change="currentValue"
+      />
+      <b style="color: #c0c4cc;padding: 0px 5px;font-weight: bold;">
+        {{ '-' }}
+      </b>
+      <el-date-picker
+        v-model="billingDateFieldTo"
+        type="datetime"
+        placeholder="Select date and time"
+        @change="currentValue"
+      />
+    </div>
   </el-form-item>
 </template>
 
 <script>
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
+import store from '@/store'
 
 export default defineComponent({
   name: 'BillingDateField',
+  setup() {
+    const billingDateFieldFrom = ref(null)
+    const billingDateFieldTo = ref(null)
 
-  data() {
+    const currentValue = () => {
+      store.dispatch('searchInvociesInfos', {
+        invoice_date_from: billingDateFieldFrom.value,
+        invoice_date_to: billingDateFieldTo.value
+      })
+    }
+
     return {
-      billingDateFieldValue: false
+      billingDateFieldFrom,
+      billingDateFieldTo,
+      //
+      currentValue
     }
   }
 })
 </script>
+<style scoped>
+.date-picker-container {
+  display: flex
+}
+</style>
