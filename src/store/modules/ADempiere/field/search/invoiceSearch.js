@@ -16,11 +16,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Vue from 'vue'
+
 import { requestListInvoicesInfo } from '@/api/ADempiere/field/search/invoice.ts'
 
 const initState = {
   InvociesInfo: {},
-  CountInvocies: 0
+  CountInvocies: 0,
+  BPShowInvoice: {}
 }
 
 export default {
@@ -32,6 +35,12 @@ export default {
     },
     setCountInfo(state, count) {
       state.CountInvocies = count
+    },
+    setInoviceShow(state, {
+      containerUuid,
+      show = false
+    }) {
+      Vue.set(state.BPShowInvoice, containerUuid, show)
     }
   },
 
@@ -82,6 +91,9 @@ export default {
     },
     getCountInvocies: (state) => {
       return state.CountInvocies
+    },
+    getSetShow: (state) => ({ containerUuid }) => {
+      return state.BPShowInvoice[containerUuid] || false
     }
   }
 }

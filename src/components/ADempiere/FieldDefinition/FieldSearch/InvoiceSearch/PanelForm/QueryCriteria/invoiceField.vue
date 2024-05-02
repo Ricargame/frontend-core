@@ -54,7 +54,7 @@ export default defineComponent({
 
   setup() {
     const optionsListOrder = ref([])
-    const saleOrderField = ref()
+    const saleOrderField = ref('')
     function showList(isShow) {
       if (isShow && isEmptyValue(optionsListOrder.value)) { filterSearchOrder({}) }
     }

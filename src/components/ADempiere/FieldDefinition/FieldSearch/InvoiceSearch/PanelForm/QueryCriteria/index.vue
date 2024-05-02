@@ -17,52 +17,50 @@
 -->
 
 <template>
-  <el-collapse v-model="ACCORDION_KEY" class="business-partners-query-criteria">
-    <el-collapse-item
-      :name="ACCORDION_KEY"
-      class="business-partners-query-criteria-collapse"
+  <el-collapse-item
+    :name="ACCORDION_KEY"
+    class="business-partners-query-criteria-collapse"
+  >
+    <template slot="title">
+      {{ title }}
+    </template>
+    <el-form
+      label-position="top"
+      size="mini"
+      class="form-base"
     >
-      <template slot="title">
-        {{ title }}
-      </template>
-      <el-form
-        label-position="top"
-        size="mini"
-        class="form-base"
-      >
-        <el-row :gutter="10">
-          <el-col :span="6">
-            <document-field />
-          </el-col>
-          <el-col :span="6">
-            <business-partner-field />
-          </el-col>
-          <el-col :span="6">
-            <sale-transaction-field />
-          </el-col>
-          <el-col :span="6">
-            <paid-field />
-          </el-col>
-        </el-row>
-        <el-row :gutter="10">
-          <el-col :span="8">
-            <description-field />
-          </el-col>
-          <el-col :span="12">
-            <billing-date-field />
-          </el-col>
-        </el-row>
-        <el-row :gutter="10">
-          <el-col :span="8">
-            <invoice-field />
-          </el-col>
-          <el-col :span="12">
-            <grand-total-field />
-          </el-col>
-        </el-row>
-      </el-form>
-    </el-collapse-item>
-  </el-collapse>
+      <el-row :gutter="10">
+        <el-col :span="6">
+          <document-field />
+        </el-col>
+        <el-col :span="6">
+          <business-partner-field />
+        </el-col>
+        <el-col :span="6">
+          <sale-transaction-field />
+        </el-col>
+        <el-col :span="6">
+          <paid-field />
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="8">
+          <description-field />
+        </el-col>
+        <el-col :span="12">
+          <billing-date-field />
+        </el-col>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="8">
+          <invoice-field />
+        </el-col>
+        <el-col :span="12">
+          <grand-total-field />
+        </el-col>
+      </el-row>
+    </el-form>
+  </el-collapse-item>
 </template>
 
 <script>
@@ -121,7 +119,7 @@ export default defineComponent({
     const ACCORDION_KEY = 'query-criteria'
 
     const title = computed(() => {
-      let title = props.metadata.panelName
+      let title = 'Factura'
       if (
         !isEmptyValue(props.metadata.panelName) &&
         !isSameValues(props.metadata.panelName, props.metadata.name)

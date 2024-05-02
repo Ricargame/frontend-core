@@ -17,13 +17,19 @@
 -->
 <template>
   <el-form-item
-    label="Transaccion de venta"
-    style="text-align: center; align-items: center;"
+    label="Pagado"
+    style="align-items: center; text-align: center;"
   >
-    <el-checkbox
-      v-model="saleTransactionField"
-      @change="currentValue"
-    />
+    <el-select
+      v-model="paidFieldValue"
+    >
+      <el-option
+        v-for="(option, key) in YES_NO_OPTIONS_LIST"
+        :key="key"
+        :value="option.stringValue"
+        :label="option.displayValue"
+      />
+    </el-select>
   </el-form-item>
 </template>
 
@@ -32,24 +38,24 @@ import { defineComponent, ref } from '@vue/composition-api'
 import store from '@/store'
 
 // Constants
+import { YES_NO_OPTIONS_LIST } from '@/utils/ADempiere/dictionary/field/yesNo.js'
 
 export default defineComponent({
-  name: 'saleTransactionField',
+  name: 'PaidField',
 
   setup() {
-    const saleTransactionField = ref(false)
+    const paidFieldValue = ref('')
 
     const currentValue = () => {
       store.dispatch('searchInvociesInfos', {
-        is_sales_transaction: saleTransactionField.value
+        is_paid: paidFieldValue.value
       })
     }
-
     return {
-      saleTransactionField,
+      paidFieldValue,
+      YES_NO_OPTIONS_LIST,
       //
       currentValue
     }
   }
 })
-</script>

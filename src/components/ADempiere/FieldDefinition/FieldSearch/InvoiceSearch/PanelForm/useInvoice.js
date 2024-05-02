@@ -26,14 +26,14 @@ import {
   UNIVERSALLY_UNIQUE_IDENTIFIER_COLUMN_SUFFIX
 } from '@/utils/ADempiere/dictionaryUtils'
 import {
-  BUSINESS_PARTNERS_LIST_FORM,
+  INVOICE_LIST_FORM,
   COLUMN_NAME
-} from '@/utils/ADempiere/dictionary/field/search/businessPartner.ts'
+} from '@/utils/ADempiere/dictionary/field/search/invoice.ts'
 import { ROWS_OF_RECORDS_BY_PAGE } from '@/utils/ADempiere/tableUtils'
 
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
-import { generateDisplayedValue } from '@/utils/ADempiere/dictionary/field/search/businessPartner.ts'
+import { generateDisplayedValue } from '@/utils/ADempiere/dictionary/field/search/invoice.ts'
 import { isSalesTransaction } from '@/utils/ADempiere/contextUtils'
 
 /**
@@ -42,7 +42,7 @@ import { isSalesTransaction } from '@/utils/ADempiere/contextUtils'
  * @returns
  */
 export default ({
-  uuidForm = BUSINESS_PARTNERS_LIST_FORM,
+  uuidForm = INVOICE_LIST_FORM,
   parentUuid,
   containerUuid,
   containerManager,
@@ -51,20 +51,26 @@ export default ({
   const timeOutRecords = ref(null)
 
   const blankValues = computed(() => {
-    const { column_name, elementColumnName } = fieldAttributes
+    const { column_name, elementColumnName } = this.metadata
     return {
       [column_name]: undefined,
       [elementColumnName]: undefined,
       [COLUMN_NAME]: undefined,
       id: undefined,
       uuid: undefined,
-      [DISPLAY_COLUMN_PREFIX + column_name]: undefined,
-      [DISPLAY_COLUMN_PREFIX + elementColumnName]: undefined,
-      value: undefined,
-      tax_id: undefined,
-      name: undefined,
-      name2: undefined,
-      description: undefined
+      business_partner: undefined,
+      date_invoiced: undefined,
+      document_no: undefined,
+      currency: undefined,
+      grand_total: undefined,
+      converted_amount: undefined,
+      open_amount: undefined,
+      payment_term: undefined,
+      is_paid: undefined,
+      is_sales_transaction: undefined,
+      description: undefined,
+      po_reference: undefined,
+      document_status: undefined
     }
   })
 
@@ -126,19 +132,17 @@ export default ({
   }
 
   function closeList() {
-    store.commit('setBusinessPartnerShow', {
+    store.commit('setInoviceShow', {
       containerUuid: uuidForm,
       show: false
     })
   }
-  console.log(uuidForm)
   function setValues(recordRow) {
     const { columnName, elementName, isSameColumnElement } = fieldAttributes
     const { uuid, id } = recordRow
 
     const displayValue = generateDisplayedValue(recordRow)
     // console.log(displayValue)
-
     store.commit('updateValueOfField', {
       parentUuid,
       containerUuid,

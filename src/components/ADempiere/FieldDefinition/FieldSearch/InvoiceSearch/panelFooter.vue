@@ -46,6 +46,7 @@
           type="danger"
           class="button-base-icon"
           icon="el-icon-close"
+          @click="closeList()"
         />
         <el-button
           type="primary"
@@ -64,9 +65,11 @@ import store from '@/store'
 // Components and Mixins
 import CustomPagination from '@/components/ADempiere/DataTable/Components/CustomPagination.vue'
 import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
+import useInvoice from './PanelForm/useInvoice.js'
 
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+import { INVOICE_LIST_FORM, COLUMN_NAME } from '@/utils/ADempiere/dictionary/field/search/invoice.ts'
 
 export default defineComponent({
   name: 'PanelFooter',
@@ -83,14 +86,33 @@ export default defineComponent({
         getFieldsLit: () => {},
         setDefaultValues: () => {}
       })
+    },
+    metadata: {
+      type: Object,
+      default: () => {
+        return {
+          containerUuid: INVOICE_LIST_FORM,
+          columnName: COLUMN_NAME
+        }
+      }
     }
   },
 
-  setup() {
+  setup(props) {
     const invoicesData = ref(0)
     const currentRow = ref(0)
     const isLoadingRecords = ref(false)
     const timeOutRecords = ref(null)
+
+    const {
+      closeList
+    } = useInvoice({
+      uuidForm: props.uuidForm,
+      parentUuid: props.metadata.parentUuid,
+      containerUuid: props.metadata.containerUuid,
+      containerManager: props.containerManager,
+      fieldAttributes: props.metadata
+    })
 
     function searchRecordsList() {
       store.dispatch('searchInvociesInfos', {
@@ -103,6 +125,7 @@ export default defineComponent({
             isLoadingRecords.value = false
           }, 1000)
         })
+      closeList()
     }
 
     const selectedRecords = computed(() => {

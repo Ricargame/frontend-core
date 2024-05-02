@@ -22,10 +22,11 @@
       highlight-current-row
       :border="true"
       fit
-      :data="recordsList"
+      :data="SearchList"
       height="300"
       style="width: 100%"
       size="mini"
+      @row-dblclick="changeRecord"
     >
       <index-column />
       <el-table-column
@@ -45,13 +46,19 @@ import store from '@/store'
 
 import { computed, defineComponent, ref } from '@vue/composition-api'
 
+// Constants
+import { INVOICE_LIST_FORM, COLUMN_NAME } from '@/utils/ADempiere/dictionary/field/search/invoice.ts'
+
 // Components and Mixins
 import IndexColumn from '@/components/ADempiere/DataTable/Components/IndexColumn.vue'
+import invoicesMixin from './mixinInvoice.js'
 
 // Utils and Helper Methods
 import { formatQuantity } from '@/utils/ADempiere/formatValue/numberFormat'
+import { formatDate } from '@/utils/ADempiere/formatValue/dateFormat'
 import { convertBooleanToString } from '@/utils/ADempiere/formatValue/booleanFormat.js'
 import { isEmptyValue } from '@/utils/ADempiere'
+import useInvoice from './PanelForm/useInvoice'
 
 export default defineComponent({
   name: 'TableRecords',
@@ -60,11 +67,45 @@ export default defineComponent({
     IndexColumn
   },
 
-  setup() {
+  mixins: [
+    invoicesMixin
+  ],
+  props: {
+    uuidForm: {
+      required: true
+    },
+    containerManager: {
+      type: Object,
+      default: () => ({
+        actionPerformed: () => {},
+        getFieldsLit: () => {},
+        setDefaultValues: () => {}
+      })
+    },
+    metadata: {
+      type: Object,
+      default: () => {
+        return {
+          containerUuid: INVOICE_LIST_FORM,
+          columnName: COLUMN_NAME
+        }
+      }
+    }
+  },
+
+  setup(props) {
     const listSummary = []
     const isLoadingRecords = ref(false)
-
     const timeOutRecords = ref(null)
+    const {
+      setValues
+    } = useInvoice({
+      uuidForm: props.uuidForm,
+      parentUuid: props.metadata.parentUuid,
+      containerUuid: props.metadata.containerUuid,
+      containerManager: props.containerManager,
+      fieldAttributes: props.metadata
+    })
     const headerList = ref([
       {
         label: 'Socio del negocio',
@@ -76,13 +117,13 @@ export default defineComponent({
         label: 'Fecha de factura',
         columnName: 'date_invoiced',
         width: '140',
-        align: 'center'
+        align: 'right'
       },
       {
         label: 'Documento No.',
         columnName: 'document_no',
         width: '120',
-        align: 'center'
+        align: 'right'
       },
       {
         label: 'Moneda',
@@ -106,7 +147,7 @@ export default defineComponent({
         label: 'Abierto',
         columnName: 'open_amount',
         width: '90',
-        align: 'center'
+        align: 'right'
       },
       {
         label: 'Termino de pago',
@@ -140,7 +181,7 @@ export default defineComponent({
       }
     ])
 
-    const recordsList = computed(() => {
+    const SearchList = computed(() => {
       const invoiceList = store.getters.getInvoicesSearchFieldRecordsList
       setTime()
       if (isEmptyValue(invoiceList)) return []
@@ -148,7 +189,7 @@ export default defineComponent({
         return {
           ...list,
           business_partner: list.business_partner,
-          date_invoiced: list.date_invoiced,
+          date_invoiced: formatDate({ value: list.date_invoiced }),
           document_no: list.document_no,
           currency: list.currency,
           grand_total: formatQuantity({ value: list.grand_total }),
@@ -175,16 +216,44 @@ export default defineComponent({
       store.dispatch('searchInvociesInfos', {})
     }
 
+    const currentRow = computed({
+      get() {
+        return store.getters.getAccountCombinationsCurrentRow({
+          containerUuid: props.uuidForm
+        })
+      },
+      // setter
+      set(rowSelected) {
+        console.log(rowSelected)
+        store.commit('setAccountCombinationsSelectedRow', {
+          containerUuid: props.uuidForm,
+          currentRow: rowSelected
+        })
+      }
+    })
+
+    function changeRecord(row) {
+      if (!isEmptyValue(row)) {
+        setValues(row)
+        store.commit('setInoviceShow', {
+          containerUuid: props.uuidForm,
+          show: false
+        })
+      }
+    }
+
     searchRecordsList()
     return {
       //
       isLoadingRecords,
+      currentRow,
       //
-      recordsList,
+      SearchList,
       headerList,
       listSummary,
       //
-      searchRecordsList
+      searchRecordsList,
+      changeRecord
     }
   }
 })
