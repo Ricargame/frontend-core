@@ -60,7 +60,7 @@ export default defineComponent({
     IndexColumn
   },
 
-  setup(props) {
+  setup() {
     const listSummary = []
     const isLoadingRecords = ref(false)
 

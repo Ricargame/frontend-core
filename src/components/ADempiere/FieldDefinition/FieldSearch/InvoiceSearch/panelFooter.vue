@@ -36,6 +36,7 @@
           <svg-icon icon-class="layers-clear" />
         </el-button>
         <el-button
+          :loading="isLoadingRecords"
           type="success"
           class="button-base-icon"
           icon="el-icon-refresh-right"
@@ -88,11 +89,20 @@ export default defineComponent({
   setup() {
     const invoicesData = ref(0)
     const currentRow = ref(0)
+    const isLoadingRecords = ref(false)
+    const timeOutRecords = ref(null)
 
     function searchRecordsList() {
       store.dispatch('searchInvociesInfos', {
         page_size: 0
       })
+        .then(() => {
+          clearTimeout(timeOutRecords.value)
+          isLoadingRecords.value = true
+          timeOutRecords.value = setTimeout(() => {
+            isLoadingRecords.value = false
+          }, 1000)
+        })
     }
 
     const selectedRecords = computed(() => {
@@ -125,6 +135,7 @@ export default defineComponent({
     }
 
     return {
+      isLoadingRecords,
       //
       searchRecordsList,
       setPageNumber,
