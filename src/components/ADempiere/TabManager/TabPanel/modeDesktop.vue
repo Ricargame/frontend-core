@@ -341,7 +341,8 @@ export default defineComponent({
     function loadOpenWindows() {
       if (root.$route.query.options === 'listRecords' && currentTab.value.isParentTab) {
         showedTableRecords(true)
-      } else if (root.$route.query.options === 'create-new' && currentTab.value.isParentTab) {
+      }
+      if (root.$route.query.options === 'create-new') {
         const { parentUuid, containerUuid } = props.tabAttributes
         showedTableRecords(false)
         setTimeout(() => {
