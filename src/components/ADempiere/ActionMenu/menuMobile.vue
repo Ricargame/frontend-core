@@ -392,7 +392,16 @@ export default defineComponent({
   }
 }
 .el-drawer__body{
+  width:100% !important;
   margin: 0 auto;
+  .el-menu{
+    .label{
+      display:inline-block !important
+    }
+    .el-submenu__title i{
+      color: black !important
+    }
+  }
 }
 .el-menu-item.is-disabled{
   opacity: 0.5 !important;
