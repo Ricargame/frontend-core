@@ -547,22 +547,22 @@ export default defineComponent({
 }
 @media screen and (min-height: 720px) {
   :root {
-    --base-table: 63vh;
+    --base-table: 62vh;
   }
 }
 @media screen and (min-height: 800px) {
   :root {
-    --base-table: 65vh;
+    --base-table: 66vh;
   }
 }
 @media screen and (min-height: 1080px) {
   :root {
-    --base-table: 73vh;
+    --base-table: 75vh;
   }
 }
 @media screen and (min-height: 1200px) {
   :root {
-    --base-table: 76vh;
+    --base-table: 77vh;
   }
 }
 @media screen and (min-height: 1400px) {
