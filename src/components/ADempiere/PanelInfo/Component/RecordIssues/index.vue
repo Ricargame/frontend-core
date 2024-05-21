@@ -104,7 +104,7 @@ export default defineComponent({
     // }
 
     const listIssues = computed(() => {
-      return store.getters.getListIssues
+      return store.getters.getListIssues(false)
     })
 
     const isNewIssues = computed({

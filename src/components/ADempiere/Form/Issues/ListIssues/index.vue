@@ -280,7 +280,7 @@ export default defineComponent({
     const statusesExpand = ref([])
 
     const listIssues = computed(() => {
-      return store.getters.getListIssues
+      return store.getters.getListIssues(false)
     })
 
     const isNewIssues = computed({

@@ -67,6 +67,29 @@ export function requestListIssues({
 }
 
 /**
+ * Issues List All from Window
+ * @param {string} tableName
+ * @param {number} recordId
+ * @param {string} searchValue
+ */
+
+export function requestListIssuesAll({
+  tableName,
+  recordId,
+  searchValue
+}) {
+  return request({
+    url: `${config.issuesManagement.endpoint}/issues/all`,
+    method: 'get',
+    params: {
+      record_id: recordId,
+      table_name: tableName,
+      search_value: searchValue
+    }
+  })
+}
+
+/**
  * List Sales Representatives
  */
 export function requestListSalesRepresentatives({
