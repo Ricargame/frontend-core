@@ -191,14 +191,12 @@ export default defineComponent({
       }
       return PRODUCT_ATTRIBUTE_FORM
     })
-
     const attributeSetInstanceId = computed(() => {
       return store.getters.getValueOfField({
         containerUuid: props.containerUuid,
         columnName: props.metadata.columnName
       })
     })
-
     const isEmptyMandatory = computed(() => {
       return panelAttribute.value.some(attribute => {
         return attribute.is_mandatory && isEmptyValue(attribute.value)
@@ -218,19 +216,19 @@ export default defineComponent({
         })
         return
       }
-
+      console.log(panelAttribute)
       const attributesList = panelAttribute.value.map(attribute => {
         return {
-          value: attribute.value,
-          key: attribute.uuid
+          key: attribute.id,
+          value: attribute.value
         }
       })
-
+      console.log(attributesList)
       isLoadingSave.value = true
       requestSaveAttributeSetInstance({
-        attributes: attributesList,
+        attributes: attributesList[0],
         productId: productId.value,
-        id: attributeSetInstanceId.value
+        id: attributeSetInstanceId
       })
         .then(response => {
           getAttributeSetInstace({
@@ -247,23 +245,22 @@ export default defineComponent({
           close()
         })
     }
-
     function getAttributesSet() {
       requestGetProductAttributeSet({
-        productId: productId.value,
-        productattributeSetInstanceId: attributeSetInstanceId.value
+        id: attributeSetInstanceId.value
       })
         .then(response => {
-          const { productAttributes } = response
-          panelAttribute.value = productAttributes.map(attribute => {
-            return {
-              ...attribute,
-              value: undefined
-            }
-          })
+          const { productAttributeSet } = response
+          console.log(response)
+          // panelAttribute.value = Object.values(productAttributeSet).map(attribute => {
+          //   return {
+          //     ...attribute,
+          //     value: undefined
+          //   }
+          // })
 
           // form model
-          productAttributes.forEach(attribute => {
+          Object.values(productAttributeSet).forEach(attribute => {
             detailValues.value[attribute.uuid] = null
           })
         })
@@ -308,8 +305,7 @@ export default defineComponent({
         productId
       })
         .then(responseSetInstance => {
-          currentAttributeSetInstance.value = responseSetInstance
-
+          currentAttributeSetInstance.value = responseSetInstance.productAttributeSet
           const { productAttributeInstances, productAttributeSet } = responseSetInstance
           const { product_attributes } = productAttributeSet
 

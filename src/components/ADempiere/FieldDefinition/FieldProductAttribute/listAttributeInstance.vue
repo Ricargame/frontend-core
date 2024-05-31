@@ -69,7 +69,7 @@
             width="300"
           >
             <template slot-scope="scope">
-              {{ scope.row.description }}
+              {{ scope.row.product_attribute_set.description }}
             </template>
           </el-table-column>
           <el-table-column
@@ -77,7 +77,7 @@
             :label="$t('field.productAttribute.lot')"
           >
             <template slot-scope="scope">
-              {{ scope.row.lot }}
+              {{ scope.row.product_attribute_set.is_lot }}
             </template>
           </el-table-column>
           <el-table-column
@@ -85,7 +85,7 @@
             :label="$t('field.productAttribute.serial')"
           >
             <template slot-scope="scope">
-              {{ scope.row.serial }}
+              {{ scope.row.product_attribute_set.is_serial }}
             </template>
           </el-table-column>
         </el-table>
@@ -144,7 +144,6 @@ export default defineComponent({
   components: {
     IndexColumn
   },
-
   props: {
     parentUuid: {
       type: String,
@@ -181,7 +180,6 @@ export default defineComponent({
     const timeOutSearch = ref(null)
     const isLoadingRecords = ref(false)
     const currentSelectAttributes = ref({})
-
     const searchValue = ref('')
 
     const shortsKey = computed(() => {

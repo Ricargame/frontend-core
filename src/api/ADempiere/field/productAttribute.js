@@ -26,32 +26,18 @@ import { ROWS_OF_RECORDS_BY_PAGE } from '@/utils/ADempiere/tableUtils'
 import { camelizeObjectKeys } from '@/utils/ADempiere/transformObject.js'
 
 export function requestListProductAttributesSetInstances({
-  id,
-  uuid,
   productId,
-  productUuid,
-  productAttributeSetInstanceId,
-  productAttributeSetInstanceUuid,
   searchValue,
   pageToken,
   pageSize = ROWS_OF_RECORDS_BY_PAGE
 }) {
   return request({
-    url: '/material-management/product-attribute/list-product-attribute-set-instances',
-    method: 'post',
+    url: `/material-management/products/${productId}/instances`,
+    method: 'get',
     params: {
-      search_value: searchValue,
+      page_size: pageSize,
       page_token: pageToken,
-      page_size: pageSize
-    },
-    data: {
-      //  DSL Query
-      id,
-      uuid,
-      product_id: productId,
-      product_uuid: productUuid,
-      product_attribute_set_instance_id: productAttributeSetInstanceId,
-      product_attribute_set_instance_uuid: productAttributeSetInstanceUuid
+      search_value: searchValue
     }
   })
     .then(response => {
@@ -60,25 +46,11 @@ export function requestListProductAttributesSetInstances({
 }
 
 export function requestGetProductAttributeSet({
-  id,
-  uuid,
-  productId,
-  productUuid,
-  productAttributeSetInstanceId,
-  productAttributeSetInstanceUuid
+  id
 }) {
   return request({
-    url: '/material-management/product-attribute/get-product-attribute-set',
-    method: 'post',
-    data: {
-      //  DSL Query
-      id,
-      uuid,
-      product_id: productId,
-      product_uuid: productUuid,
-      product_attribute_set_instance_id: productAttributeSetInstanceId,
-      product_attribute_set_instance_uuid: productAttributeSetInstanceUuid
-    }
+    url: `/material-management/products/${id}/attribute-values`,
+    method: 'get'
   })
     .then(response => {
       return camelizeObjectKeys(response)
@@ -87,31 +59,23 @@ export function requestGetProductAttributeSet({
 
 export function requestSaveAttributeSetInstance({
   id,
-  uuid,
-  guaranteeDate,
   lot,
   serial,
   attributes,
   productId,
-  productUuid,
-  productAttributeSetId,
-  productAttributeSetUuid
+  productAttributeSetId
 }) {
+  console.log(attributes)
   return request({
-    url: '/material-management/product-attribute/save-product-attribute-set-instance',
+    url: `/material-management/products/${productId}/instances`,
     method: 'post',
     data: {
       //  DSL Query
       id,
-      uuid,
-      guarantee_date: guaranteeDate,
       lot,
       serial,
       attributes,
-      product_id: productId,
-      product_uuid: productUuid,
-      product_attribute_set_id: productAttributeSetId,
-      product_attribute_set_uuid: productAttributeSetUuid
+      product_attribute_set_id: productAttributeSetId
     }
   })
     .then(response => {
@@ -121,20 +85,11 @@ export function requestSaveAttributeSetInstance({
 
 export function requestGetProductAttributeSetInstace({
   id,
-  uuid,
-  productId,
-  productUuid
+  productId
 }) {
   return request({
-    url: '/material-management/product-attribute/get-product-attribute-set-instance',
-    method: 'post',
-    data: {
-      //  DSL Query
-      id,
-      uuid,
-      product_id: productId,
-      product_uuid: productUuid
-    }
+    url: `/material-management/products/${productId}/instances/${id}`,
+    method: 'get'
   })
     .then(response => {
       return camelizeObjectKeys(response)
