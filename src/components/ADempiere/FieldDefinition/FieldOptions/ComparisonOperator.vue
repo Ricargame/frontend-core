@@ -15,13 +15,11 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <https:www.gnu.org/licenses/>.
 -->
-
 <template>
   <el-dropdown
     size="small"
-    plain
-    :split-button="true"
     type="primary"
+    plain
     :class="{
       'comparison-operator-container': true,
       'without-defualt-action': true,
@@ -31,7 +29,9 @@
     :disabled="isReadOnlyFromField"
     @command="handleOperator"
   >
-    {{ $t('operators.' + currentOperatorValue) }}
+    <el-button type="primary" style="font-weight: bold;color: #0080ff;border-color: #0080ff;background: #ecf5ff;border: solid #0080ff 1px;">
+      {{ $t('operators.onlyOperators.' + currentOperatorValue) }}
+    </el-button>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item
         v-for="(operator, index) in operatorList"
