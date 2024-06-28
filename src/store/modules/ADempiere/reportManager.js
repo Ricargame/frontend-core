@@ -53,13 +53,17 @@ const initState = {
   drillTablesList: {},
   reportsOutput: {},
   reportsGenerated: {},
-  isShowPanelConfig: {}
+  isShowPanelConfig: {},
+  pageSize: 15
 }
 
 const reportManager = {
   state: initState,
 
   mutations: {
+    setPageSize(state, pageSize) {
+      state.pageSize = pageSize
+    },
     setPrintFormatsList(state, { reportId, printFormatList }) {
       Vue.set(state.printFormatList, reportId, printFormatList)
     },
@@ -116,7 +120,9 @@ const reportManager = {
       reportViewId,
       tableName,
       isSummary,
-      recordUuid
+      recordUuid,
+      pageSize = 15,
+      pageNumber
     }) {
       return new Promise(resolve => {
         const reportDefinition = rootGetters.getStoredReport(containerUuid)
@@ -166,7 +172,9 @@ const reportManager = {
           reportViewId,
           isSummary,
           tableName,
-          recordId
+          recordId,
+          pageSize,
+          pageToken: pageNumber
         })
       })
     },
@@ -597,6 +605,13 @@ const reportManager = {
               instance_id,
               report_view_id
             } = reportResponse
+            // const dataToStored = reportResponse.records.map((record, rowIndex) => {
+            //   return {
+            //     ...record.values,
+            //     ...ROW_ATTRIBUTES,
+            //     rowIndex
+            //   }
+            // })
             router.push({
               path: `report-viewer-engine/${id}/${instance_id}/${report_view_id}`,
               name: 'Report Viewer Engine',
@@ -614,7 +629,7 @@ const reportManager = {
               ...reportResponse,
               instanceUuid: id
             })
-            resolve(reportResponse)
+            commit('setPageSize', pageSize)
           })
           .catch(error => {
             showNotification({
@@ -633,11 +648,12 @@ const reportManager = {
     getReportGenerated: (state) => (containerUuid) => {
       return state.reportsGenerated[containerUuid]
     },
-
+    getPageSize: (state) => {
+      return state.pageSize
+    },
     getReportOutput: (state) => (instanceUuid) => {
       return state.reportsOutput[instanceUuid]
     },
-
     getPrintFormatList: (state) => (reportId) => {
       return state.printFormatList[reportId] || []
     },

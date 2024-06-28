@@ -45,6 +45,9 @@
           <report-panel
             :columns="reportColumns"
             :data="reportRow"
+            :container-uuid="containerUuid"
+            :instance-uuid="storedReportOutput.instanceUuid"
+            :container-manager="containerManager"
           />
         </div>
       </el-col>
@@ -129,7 +132,6 @@ export default defineComponent({
 
   setup(props, { root }) {
     const { reportId, reportUuid } = root.$route.params
-
     const {
       containerManager, actionsManager, storedReportDefinition
     } = mixinReport({
@@ -157,17 +159,17 @@ export default defineComponent({
     const link = computed(() => {
       return storedReportOutput.value.link
     })
-
     const isMobile = computed(() => {
       return store.state.app.device === 'mobile'
     })
-
+    const containerUuid = computed(() => {
+      return storedReportDefinition.value.containerUuid
+    })
     const reportColumns = computed(() => {
       const { columns } = storedReportOutput.value
       if (isEmptyValue(columns)) return []
       return columns
     })
-
     const reportRow = computed(() => {
       const { rows } = storedReportOutput.value
       if (isEmptyValue(rows)) return []
@@ -324,6 +326,7 @@ export default defineComponent({
       drawer,
       isShowPanelConfig,
       // Computeds
+      containerUuid,
       name,
       help,
       link,

@@ -354,10 +354,13 @@ export default defineComponent({
 
     function runReport() {
       const reportDefinition = store.getters.getStoredReport(props.containerUuid)
-      const reportOutputParams = store.getters.getReportParameters({
-        containerUuid: props.containerUuid,
-        fieldsList: reportDefinition.fieldsList
-      })
+      let reportOutputParams
+      if (!isEmptyValue(reportDefinition) && !isEmptyValue(reportDefinition.fieldsList)) {
+        reportOutputParams = store.getters.getReportParameters({
+          containerUuid: props.containerUuid,
+          fieldsList: reportDefinition.fieldsList
+        })
+      }
       const { name, description } = store.getters.getReportOutput(root.$route.params.reportId)
       showNotification({
         title: lang.t('notifications.processing'),

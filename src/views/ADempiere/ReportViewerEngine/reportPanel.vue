@@ -20,17 +20,19 @@
   <div>
     <el-card shadow="never">
       <el-table
+        ref="table"
         :data="dataList"
         row-key="level"
         :border="true"
-        default-expand-all
-        style="width: 100%"
+        height="calc(100vh - 190px)"
       >
         <el-table-column
           v-for="(fieldAttributes, key) in columns"
           :key="key"
           :column-key="fieldAttributes.code"
-          :min-width="'180'"
+          :min-width="'280'"
+          header-align="left"
+          :align="getAlignment(fieldAttributes.display_type)"
         >
           <template slot="header">
             {{ fieldAttributes.title }}
@@ -40,18 +42,44 @@
           </template>
         </el-table-column>
       </el-table>
+      <custom-pagination
+        :container-uuid="containerUuid"
+        :total-records="currentRecords"
+        :page-size="currentPageSize"
+        :is-showed-selected="true"
+        :page-number="currentPageNumber"
+        :handle-change-page-size="handleChangeSizePage"
+        :handle-change-page-number="handleChangePage"
+      />
     </el-card>
   </div>
 </template>
 
 <script>
+import store from '@/store'
 import { defineComponent, computed } from '@vue/composition-api'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils.js'
+import { isNumberField } from '@/utils/ADempiere/references'
+import CustomPagination from '@/components/ADempiere/DataTable/Components/CustomPagination.vue'
 
 export default defineComponent({
   name: 'reportPanel',
-
+  components: {
+    CustomPagination
+  },
   props: {
+    containerManager: {
+      type: Object,
+      default: () => []
+    },
+    instanceUuid: {
+      type: Number,
+      default: 0
+    },
+    containerUuid: {
+      type: Number,
+      default: 0
+    },
     columns: {
       type: Array,
       default: () => []
@@ -61,22 +89,61 @@ export default defineComponent({
       default: () => []
     }
   },
-
   setup(props) {
     function displayLabel(prop, row) {
-      const { display_value, value } = row.cells[prop]
-      if (
-        isEmptyValue(display_value) &&
-        !isEmptyValue(value) &&
-        typeof value === 'string'
-      ) {
-        return value
+      if (!isEmptyValue(row.children) && !isEmptyValue(prop) && !isEmptyValue(row)) {
+        const { display_value, value } = row.cells[prop]
+        if (
+          isEmptyValue(display_value) &&
+          !isEmptyValue(value) &&
+          typeof value === 'string'
+        ) {
+          console.log(value)
+          return value
+        }
+        return display_value
       }
-      return display_value
+    }
+    function getAlignment(displayType) {
+      if (isNumberField(displayType)) {
+        return 'right'
+      }
+      return 'left'
     }
 
+    const recordData = computed(() => {
+      return store.getters.getReportOutput(props.instanceUuid)
+    })
+    const currentRecords = computed(() => {
+      return +recordData.value.record_count
+    })
+    const currentPageNumber = computed(() => {
+      return parseInt(recordData.value.next_page_token, 10)
+    })
+    const currentPageSize = computed(() => {
+      return parseInt(store.getters.getPageSize, 10)
+    })
+    function handleChangeSizePage(pageSize) {
+      props.containerManager.setPageSize({
+        containerUuid: props.containerUuid,
+        reportId: 54319,
+        pageSize
+      })
+    }
+    function handleChangePage(pageNumber) {
+      props.containerManager.setPageNumber({
+        parentUuid: props.parentUuid,
+        containerUuid: props.containerUuid,
+        pageNumber,
+        pageSize: currentPageSize.value
+      })
+    }
     const dataList = computed(() => {
       return props.data.map((row, index) => {
+        row.children.push({
+          children: [],
+          level: row.children.level + 10
+        })
         return {
           ...row,
           level: index
@@ -85,8 +152,14 @@ export default defineComponent({
     })
 
     return {
+      currentPageSize,
+      currentPageNumber,
+      currentRecords,
       dataList,
-      displayLabel
+      displayLabel,
+      getAlignment,
+      handleChangeSizePage,
+      handleChangePage
     }
   }
 })
