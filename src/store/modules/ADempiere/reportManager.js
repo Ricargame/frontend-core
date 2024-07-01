@@ -605,13 +605,12 @@ const reportManager = {
               instance_id,
               report_view_id
             } = reportResponse
-            // const dataToStored = reportResponse.records.map((record, rowIndex) => {
-            //   return {
-            //     ...record.values,
-            //     ...ROW_ATTRIBUTES,
-            //     rowIndex
-            //   }
-            // })
+            const reportRow = reportResponse.rows.map((row, rowIndex) => {
+              let { cells } = row
+              cells = cells + rowIndex
+              return cells
+            })
+            console.log(reportRow)
             router.push({
               path: `report-viewer-engine/${id}/${instance_id}/${report_view_id}`,
               name: 'Report Viewer Engine',

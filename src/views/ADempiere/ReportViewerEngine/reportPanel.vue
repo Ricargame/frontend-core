@@ -91,18 +91,15 @@ export default defineComponent({
   },
   setup(props) {
     function displayLabel(prop, row) {
-      if (!isEmptyValue(row.children) && !isEmptyValue(prop) && !isEmptyValue(row)) {
-        const { display_value, value } = row.cells[prop]
-        if (
-          isEmptyValue(display_value) &&
-          !isEmptyValue(value) &&
-          typeof value === 'string'
-        ) {
-          console.log(value)
-          return value
-        }
-        return display_value
+      const { display_value, value } = row.cells[prop]
+      if (
+        isEmptyValue(display_value) &&
+        !isEmptyValue(value) &&
+        typeof value === 'string'
+      ) {
+        return value
       }
+      return display_value
     }
     function getAlignment(displayType) {
       if (isNumberField(displayType)) {
@@ -140,10 +137,6 @@ export default defineComponent({
     }
     const dataList = computed(() => {
       return props.data.map((row, index) => {
-        row.children.push({
-          children: [],
-          level: row.children.level + 10
-        })
         return {
           ...row,
           level: index
