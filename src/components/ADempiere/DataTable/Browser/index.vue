@@ -74,7 +74,8 @@
         :prop="fieldAttributes.columnName"
         sortable
         :sort-by="fieldAttributes.sortByProperty"
-        :min-width="widthColumn(fieldAttributes)"
+        :min-width="minWidthColumn(fieldAttributes)"
+        :width="widthColumn(fieldAttributes)"
         :fixed="fieldAttributes.isFixedTableColumn"
       >
         <template slot="header">
@@ -238,7 +239,27 @@ export default defineComponent({
         return false
       })
     })
-    function widthColumn(fieldAttributes) {
+    function widthColumn(columnName) {
+      let maxColumnWidth = 0
+
+      if (!isEmptyValue(recordsWithFilter)) {
+        recordsWithFilter.value.forEach(data => {
+          const value = data[columnName.columnName]
+          const displayValue = data[columnName.displayColumnName]
+
+          maxColumnWidth = Math.max(
+            maxColumnWidth,
+            value && value.value ? value.value.toString().length : value ? value.toString().length : 0,
+            displayValue ? displayValue.toString().length : 0
+          )
+        })
+      }
+      const headerWidth = columnName.name.length * 12
+      maxColumnWidth += headerWidth
+      console.log(`${columnName} - ${maxColumnWidth}`)
+      return maxColumnWidth
+    }
+    function minWidthColumn(fieldAttributes) {
       const { componentPath } = fieldAttributes
       if (['FieldSearch', 'FieldAccountingCombination'].includes(componentPath)) return '500'
       return '250'
@@ -532,6 +553,7 @@ export default defineComponent({
       loadSelection,
       handleChangeSizePage,
       activateAll,
+      minWidthColumn,
       widthColumn
     }
   }
