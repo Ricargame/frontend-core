@@ -292,10 +292,12 @@ export default defineComponent({
       //   // not research
       //   return
       // }
+      const pageSize = store.getters.getPreference.value
       if (isReadyToSearch.value) {
         // first search by default
         store.dispatch('getBrowserSearch', {
-          containerUuid: browserUuid.value
+          containerUuid: browserUuid.value,
+          pageSize
         })
 
         // hide showed criteria
