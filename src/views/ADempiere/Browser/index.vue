@@ -149,15 +149,14 @@ export default defineComponent({
     }
     // set uuid from associated browser without menu
     if (!isEmptyValue(root.$route.params) && !isEmptyValue(root.$route.params.browserId)) {
-      browserId = root.$route.params.browserId.toString()
+      browserId = root.$route.query.recordId
     }
     // set uuid from test
     if (!isEmptyValue(props.uuid)) {
       browserId = props.uuid
     }
-
     const browserUuid = computed(() => {
-      let uuid = root.$route.meta.uuid
+      let uuid = root.$route.params.browserId
       if (isEmptyValue(uuid)) {
         uuid = store.getters.getStoredBrowserUuidById(browserId)
       }
@@ -275,7 +274,6 @@ export default defineComponent({
         }
         return
       }
-
       store.dispatch('getBrowserDefinitionFromServer', {
         // id: browserId,
         id: browserUuid.value,
