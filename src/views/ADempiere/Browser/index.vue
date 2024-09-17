@@ -148,7 +148,7 @@ export default defineComponent({
       browserId = root.$route.meta.action_uuid.toString()
     }
     // set uuid from associated browser without menu
-    if (!isEmptyValue(root.$route.params) && !isEmptyValue(root.$route.params.browserId)) {
+    if (!isEmptyValue(root.$route.query) && !isEmptyValue(root.$route.query.recordId)) {
       browserId = root.$route.query.recordId
     }
     // set uuid from test
