@@ -343,7 +343,7 @@ export default defineComponent({
           zoom_windows: [],
           isLoadingZoom: false
         }
-        if (child.is_parent && child.cells[parentColumnKey].display_value === parentDisplayValue) {
+        if (child.is_parent && !isEmptyValue(parentColumnKey) && child.cells[parentColumnKey].display_value === parentDisplayValue) {
           newRow.cells[parentColumnKey].display_value = ''
         }
         return newRow
