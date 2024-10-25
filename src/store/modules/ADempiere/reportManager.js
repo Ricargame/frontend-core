@@ -45,6 +45,7 @@ import {
   DEFAULT_REPORT_TYPE
 } from '@/utils/ADempiere/dictionary/report.js'
 import { config } from '@/utils/ADempiere/config'
+import { REPORT_VIEWER_NAME } from '@/utils/ADempiere/constants/report'
 
 // Utils and Helper Methods
 import { getToken } from '@/utils/auth'
@@ -1039,7 +1040,6 @@ const reportManager = {
           ids
         })
           .then(response => {
-            console.log(reportUuid)
             const { file_name } = response
             requestShareResources({
               fileName: file_name
@@ -1052,7 +1052,74 @@ const reportManager = {
                   file.target = '_blank'
                   file.click()
                 }
-                resolve(response)
+                if (checkValue === 0) {
+                  const recordId = rootGetters.getIdOfContainer({
+                    containerUuid,
+                    tableName
+                  })
+                  let link = {
+                    href: undefined,
+                    download: undefined
+                  }
+                  generateReportRequest({
+                    id: reportId,
+                    tableName,
+                    recordId
+                  })
+                    .then(runReportResponse => {
+                      const { instance_id, output } = runReportResponse
+                      fetch(data)
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('Network response was not ok')
+                          }
+                          return response.arrayBuffer()
+                        })
+                        .then(buffer => {
+                          const binary = new Uint8Array(buffer)
+                          const binaryString = Array.from(binary).map(byte => String.fromCharCode(byte)).join('')
+                          const base64String = btoa(binaryString)
+                          link = buildLinkHref({
+                            fileName: file_name,
+                            outputStream: base64String,
+                            mimeType: output.mime_type
+                          })
+                          // Continuar con la navegación y el commit
+                          router.push({
+                            path: `/report-viewer/${reportId}`,
+                            name: REPORT_VIEWER_NAME,
+                            params: {
+                              reportId,
+                              reportUuid,
+                              instanceUuid: reportId,
+                              fileName: output.file_name + instance_id,
+                              name: output.name + instance_id,
+                              tableName: output.table_name
+                            }
+                          }, () => {})
+                          const updatedOutput = {
+                            ...output,
+                            output_stream: base64String
+                          }
+                          commit('setReportOutput', {
+                            ...updatedOutput,
+                            reportId,
+                            reportUuid: reportId,
+                            instanceUuid: reportId,
+                            link,
+                            url: link.href,
+                            reportUuidStore: 'a42ab3b6-fb40-11e8-a479-7a0060f0aa01'
+                          })
+                        })
+                        .catch(error => {
+                          console.error('Error al obtener el PDF:', error)
+                        })
+                    })
+                }
+              })
+              .finally(() => {
+                commit('setIsLoadingDialog', false)
+                commit('setViewDialog', false)
               })
           })
       })

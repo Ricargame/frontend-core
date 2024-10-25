@@ -170,6 +170,7 @@ export default defineComponent({
       return []
     })
     function printProcess() {
+      store.commit('setIsLoadingDialog', false)
       if (!isEmptyValue(selectionsList) && !isEmptyValue(selectionsList.value) && selectionsList.value.length > 1) {
         store.commit('setViewDialog', true)
       } else {

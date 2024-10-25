@@ -181,7 +181,6 @@ export default defineComponent({
         reportType.value = isEmptyValue(format) ? 'pdf' : format
         reportContent.value = output
       }
-
       // update name in tag view
       store.dispatch('tagsView/updateVisitedView', {
         ...root.$route,
@@ -196,6 +195,10 @@ export default defineComponent({
       }
       if (!isEmptyValue(storedReportDefinition.value)) {
         // findActionsMenu()
+        getCachedReport()
+        return
+      }
+      if (!isEmptyValue(store.getters.getStoredReport(storedReportOutput.value.reportUuidStore))) {
         getCachedReport()
         return
       }
