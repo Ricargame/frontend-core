@@ -246,7 +246,9 @@ export default defineComponent({
     const isLoading = ref(false)
     const validTime = ref(3600)
     const titleDocument = ref(
-      isEmptyValue(props.reportOutput) ? props.reportMetadata.name : props.reportOutput.name
+      isEmptyValue(props.reportOutput)
+        ? (props.reportMetadata ? props.reportMetadata.name : '')
+        : props.reportOutput.name
     )
     const isTemplateSelected = ref(false)
     const markdownContent = ref(store.getters.getDefaultBody)
@@ -487,7 +489,9 @@ export default defineComponent({
     function blankValue() {
       store.commit('setContactSend', '')
       store.commit('setTypeNotify', '')
-      titleDocument.value = isEmptyValue(props.reportOutput) ? props.reportMetadata.name : props.reportOutput.name
+      titleDocument.value = isEmptyValue(props.reportOutput)
+        ? (props.reportMetadata ? props.reportMetadata.name : '')
+        : props.reportOutput.name
       let menuDefault = ''
       if (!isEmptyValue(storedMailTemplatesList.value) && !isEmptyValue(storedMailTemplatesList.value.menus)) {
         menuDefault = storedMailTemplatesList.value.menus[0].mail_text
