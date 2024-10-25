@@ -131,9 +131,9 @@ export default defineComponent({
       return store.getters.getShowPeriod
     })
     // Const
-    const COLUMNS_PERIOD = ['period_actual_amount', 'period_variance_amount']
-    const COLUMNS_ACCUMULATED = ['ytd_actual_amount', 'variance_amount', 'variance_percentage']
-    const COLUMNS_BUDGET = ['period_budget_amount', 'ytd_budget_amount']
+    const COLUMNS_PERIOD = ['period_variance_amount']
+    const COLUMNS_ACCUMULATED = ['variance_amount', 'variance_percentage']
+    const COLUMNS_BUDGET = ['period_budget_amount', 'ytd_budget_amount', 'ytd_actual_amount', 'period_actual_amount']
 
     const showAccumulated = computed(() => {
       return store.getters.getShowAccumulated
