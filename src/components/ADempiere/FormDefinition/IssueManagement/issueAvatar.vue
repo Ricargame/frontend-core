@@ -30,7 +30,23 @@
         cursor: default;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       "
-    />
+    >
+      <div slot="error" class="image-slot">
+        <img
+          :src="avatarSrc"
+          alt="Avatar"
+          style="
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            cursor: default;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+          "
+        >
+      </div>
+    </el-image>
 
     <b>
       {{ user.name }}
