@@ -1,7 +1,7 @@
 ---
-name: Reporte de Error (Proceso / Reporte)
-about: Error o Comportamiento inesperado al ejecutar un Proceso / Reporte
-title: "[Bug: Report] "
+name: Reporte de Error (Smart Browser / Formulario)
+about: Error o Comportamiento inesperado al interactuar con un Formulario o Smart Browser
+title: "[Bug: Browser] "
 labels: bug
 assignees: ''
 
@@ -17,7 +17,12 @@ assignees: ''
 - Opción de Menú: 
 
 
-### Parámetros
+### Parámetros de Búsqueda
+
+1. [xxx]
+2. [xxx]
+
+### Parámetros de Ejecución
 
 1. [xxx]
 2. [xxx]

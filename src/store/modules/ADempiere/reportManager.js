@@ -82,6 +82,7 @@ const initState = {
   activateCollapse: 0,
   viewDialog: false,
   isLoadingDialog: false
+  instanceId: 0
 }
 const reportManager = {
   state: initState,
@@ -92,6 +93,9 @@ const reportManager = {
     },
     setViewDialog(state, viewDialog) {
       state.viewDialog = viewDialog
+    },
+    setInstanceId(state, instanceId) {
+      state.instanceId = instanceId
     },
     setActivateCollapse(state, activateCollapse) {
       state.activateCollapse = activateCollapse
@@ -642,6 +646,7 @@ const reportManager = {
           containerUuid = currentRoute.params.reportUuid
         }
       }
+      const instanceId = getters.getInstanceId
       const reportDefinition = getters.getStoredReport(containerUuid)
       const {
         internal_id,
@@ -708,7 +713,8 @@ const reportManager = {
           tableName,
           pageSize,
           filters,
-          sortBy
+          sortBy,
+          instanceId
         })
           .then(reportResponse => {
             commit('setReportOutput', {
@@ -806,6 +812,7 @@ const reportManager = {
               pageSize,
               pageToken
             })
+            commit('setInstanceId', instance_id)
             showNotification({
               title: language.t('notifications.succesful'),
               message: name,
@@ -1206,6 +1213,9 @@ const reportManager = {
     },
     getIsLoadingDialog: (state) => {
       return state.isLoadingDialog
+    },
+    getInstanceId: (state) => {
+      return state.instanceId
     }
   }
 }

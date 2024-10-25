@@ -1,7 +1,7 @@
 ---
-name: Reporte de Error (Proceso / Reporte)
-about: Error o Comportamiento inesperado al ejecutar un Proceso / Reporte
-title: "[Bug: Report] "
+name: Reporte de Error (Ventana)
+about: Error o Comportamiento inesperado al Interactuar con Ventana
+title: "[Bug: Window] "
 labels: bug
 assignees: ''
 
@@ -16,11 +16,11 @@ assignees: ''
 - Host / Servidor: 
 - Opción de Menú: 
 
+### Datos del Registro (Si aplica)
 
-### Parámetros
-
-1. [xxx]
-2. [xxx]
+1. Nro de Documento: 
+2. Socio de Negocio:
+3. Fecha:
 
 ### Pasos para Reproducir
 

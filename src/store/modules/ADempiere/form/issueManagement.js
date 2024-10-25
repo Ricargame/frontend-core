@@ -51,6 +51,7 @@ const initStateIssueManagement = {
     recordCount: 0,
     pageSize: ROWS_OF_RECORDS_BY_PAGE,
     pageNumber: 1,
+    isloading: false,
     nextPageToken: undefined
   }
 }
@@ -122,7 +123,9 @@ export default {
           // refresh with same page
           pageNumber = storedPageNumber
         }
+        if (isEmptyValue(pageSize)) pageSize = issuesData.pageSize
         const pageToken = generatePageToken({ pageNumber })
+        commit('setIsLoadListIssues', true)
         // commit('setIsLoadListIssuesAll', true)
         return requestListIssuesAll({
           tableName,

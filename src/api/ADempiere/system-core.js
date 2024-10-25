@@ -114,3 +114,15 @@ export function listProductConversionsRequest({
     method: 'get'
   })
 }
+
+/**
+ * Get Currency Precision
+ */
+export function getCurrencyPrecision({
+  id
+}) {
+  return request({
+    url: `core-functionality/currencies/${id}`,
+    method: 'get'
+  })
+}

@@ -34,7 +34,6 @@
       type="number"
       :min="minValue"
       :max="maxValue"
-      :precision="precision"
       :controls="isShowControls"
       :controls-position="controlsPosition"
       autofocus
@@ -133,7 +132,8 @@ export default {
         })
       }
       if (isDecimalField(this.metadata.display_type)) {
-        return store.getters.getStandardPrecision
+        // return store.getters.getStandardPrecision
+        return store.getters.getCurrencyPrecision
       }
       return undefined
     },

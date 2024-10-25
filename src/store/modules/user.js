@@ -19,9 +19,10 @@
 import language from '@/lang'
 
 // Constants
-import { CLIENT, ORGANIZATION, WAREHOUSE } from '@/utils/ADempiere/constants/systemColumns'
+import { CLIENT, ORGANIZATION, CURRENCY, WAREHOUSE } from '@/utils/ADempiere/constants/systemColumns'
 import { title } from '@/settings'
 import { config } from '@/utils/ADempiere/config'
+import { ACCOUNTING_CONTEXT_PREFIX } from '@/utils/ADempiere/contextUtils'
 
 // API Request Methods
 import {
@@ -45,6 +46,7 @@ import {
   systemInfoS3,
   systemInfoReportEngine
 } from '@/api/ADempiere/common/index.ts'
+import { getCurrencyPrecision } from '@/api/ADempiere/system-core.js'
 
 // Utils and Helper Methods
 import { resetRouter } from '@/router'
@@ -82,6 +84,7 @@ const state = {
   systemInfo: {},
   dictionary: {},
   s3Version: {},
+  precisionContext: {},
   reportEngineVersion: {}
 }
 
@@ -151,6 +154,9 @@ const mutations = {
   },
   setSystemReportEngine(state, info) {
     state.reportEngineVersion = info
+  },
+  setCurrencyPrecision(state, precision) {
+    state.precisionContext = precision
   }
 }
 
@@ -224,6 +230,9 @@ const actions = {
           dispatch('systemDictionary')
           dispatch('systemS3')
           dispatch('systemReportEngine')
+          dispatch('currencyPrecision', {
+            id: defaultContext[ACCOUNTING_CONTEXT_PREFIX + CURRENCY]
+          })
           commit('setIsSession', true)
           commit('setSessionInfo', {
             id,
@@ -295,6 +304,26 @@ const actions = {
         })
         .catch(error => {
           console.warn(`Error ${error.code} getting context session: ${error.message}.`)
+          reject(error)
+        })
+    })
+  },
+
+  /**
+   * Get Currency
+   */
+  currencyPrecision({ commit }, {
+    id
+  }) {
+    return new Promise((resolve, reject) => {
+      getCurrencyPrecision({
+        id
+      })
+        .then(response => {
+          commit('setCurrencyPrecision', response)
+          resolve(response)
+        })
+        .catch(error => {
           reject(error)
         })
     })
@@ -904,6 +933,9 @@ const getters = {
   },
   getReportEngineVersion: (state) => {
     return state.reportEngineVersion
+  },
+  getCurrencyPrecision: (state) => {
+    return state.precisionContext
   }
 }
 
