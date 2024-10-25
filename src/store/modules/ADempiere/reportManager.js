@@ -81,7 +81,7 @@ const initState = {
   defaultBody: '',
   activateCollapse: 0,
   viewDialog: false,
-  isLoadingDialog: false
+  isLoadingDialog: false,
   instanceId: 0
 }
 const reportManager = {
