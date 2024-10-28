@@ -303,12 +303,6 @@ const windowManager = {
       pageSize = ROWS_OF_RECORDS_BY_PAGE_HIGH,
       sortBy
     }) {
-      if (isEmptyValue(filters)) {
-        filters = rootGetters.getTabDataFilters({
-          parentUuid,
-          containerUuid
-        })
-      }
       return new Promise(resolve => {
         const {
           isParentTab,
@@ -324,7 +318,6 @@ const windowManager = {
           const parseFilter = JSON.parse(filters)
           filters = [parseFilter]
         }
-
         // add filters with link column name and parent column name
         if (
           !isEmptyValue(link_column_name) &&
@@ -366,7 +359,6 @@ const windowManager = {
             console.warn(`Get entities without context to ${parent_column_name} to filter in getEntities`)
           }
         }
-
         // get context values
         const contextAttributesList = getContextAttributes({
           parentUuid,
@@ -383,8 +375,13 @@ const windowManager = {
         //   resolve([])
         //   return
         // }
-
-        if (!isEmptyValue(filtersRecord) && isEmptyValue(filters)) {
+        if (isEmptyValue(referenceUuid)) {
+          referenceUuid = getters.getTabData({
+            containerUuid
+          }).referenceUuid
+        }
+        if (!isEmptyValue(filtersRecord) && isEmptyValue(filters) && isEmptyValue(referenceUuid)) {
+          console.log(filtersRecord)
           // filters.map(list => {
           //   const { columnName } = list
           //   if (filtersRecord.columnName === columnName) {
@@ -416,8 +413,7 @@ const windowManager = {
           isLoaded: false,
           containerUuid,
           pageSize,
-          sortBy,
-          referenceUuid
+          sortBy
         })
         commit('setIsLoadingTabRecordsList', {
           containerUuid,
@@ -492,6 +488,12 @@ const windowManager = {
           commit('setTabData', {
             containerUuid,
             contextAttributes
+          })
+        }
+        if (!isEmptyValue(referenceUuid)) {
+          commit('setTabData', {
+            containerUuid,
+            referenceUuid
           })
         }
         if (isEmptyValue(contextAttributes)) {
@@ -633,7 +635,6 @@ const windowManager = {
               isLoading: false,
               recordCount: dataResponse.recordCount,
               sortBy,
-              referenceUuid,
               contextAttributes
             })
 
@@ -669,7 +670,6 @@ const windowManager = {
               parentUuid,
               isLoaded: true,
               containerUuid,
-              referenceUuid,
               contextAttributes
             })
             commit('setIsLoadingTabRecordsList', {
@@ -963,8 +963,7 @@ const windowManager = {
         selectionsList,
         currentRecordUuid,
         pageNumber,
-        pageSize,
-        referenceUuid
+        pageSize
       } = getters.getTabData({
         containerUuid
       })
@@ -978,8 +977,7 @@ const windowManager = {
         currentRecordUuid,
         pageNumber,
         isLoaded,
-        pageSize,
-        referenceUuid
+        pageSize
       })
     }
   },
