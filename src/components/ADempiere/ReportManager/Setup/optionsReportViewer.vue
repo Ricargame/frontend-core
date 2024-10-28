@@ -409,6 +409,10 @@ export default defineComponent({
       if (reportDefinition.is_jasper_report) {
         url = 'runReport'
       }
+      let isChangePanel = true
+      if (reportDefinition.is_process_before_launch) {
+        isChangePanel = false
+      }
       store.dispatch(url, {
         containerUuid: props.containerUuid || root.$route.params.processUuid,
         isSummary: true,
@@ -419,7 +423,7 @@ export default defineComponent({
         reportViewId: defaultParams.value.report_view_id,
         pageSize: props.reportOutput.pageSize,
         pageToken: props.reportOutput.pageToken,
-        isChangePanel: true
+        isChangePanel
       })
         .then(response => {
           store.dispatch('tagsView/delCachedView', findTagViwer.value).then(() => {

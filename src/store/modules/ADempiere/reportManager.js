@@ -667,7 +667,7 @@ const reportManager = {
         reportName = action.name
       }
       commit('setReportIsLoading', true)
-      if ((isEmptyValue(instanceUuid) || reportDefinition.is_process_before_launch) || (!reportDefinition.is_process_before_launch && !isChangePanel)) {
+      if ((isEmptyValue(instanceUuid) || reportDefinition.is_process_before_launch) && !isChangePanel) {
         dispatch('startReport', {
           containerUuid,
           reportType,
