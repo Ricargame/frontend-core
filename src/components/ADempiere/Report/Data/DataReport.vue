@@ -623,6 +623,9 @@ export default defineComponent({
   .success-row .el-icon-arrow-right{
     display: block !important;
   }
+  .el-table__indent{
+    padding-left: 0 !important;
+  }
 }
 .container-report-engine .el-card__body {
   padding-left: 20px !important;
