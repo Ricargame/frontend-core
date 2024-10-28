@@ -381,7 +381,6 @@ const windowManager = {
           }).referenceUuid
         }
         if (!isEmptyValue(filtersRecord) && isEmptyValue(filters) && isEmptyValue(referenceUuid)) {
-          console.log(filtersRecord)
           // filters.map(list => {
           //   const { columnName } = list
           //   if (filtersRecord.columnName === columnName) {
