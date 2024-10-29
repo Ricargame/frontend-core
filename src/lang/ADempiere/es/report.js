@@ -120,7 +120,7 @@ const report = {
   },
   dialogLegacy: {
     displayOptions: 'Opciones de Visualización',
-    downloadFiles: 'Descargar Archivos',
+    downloadFiles: 'Descargar Archivos en Comprimido',
     showReport: 'Mostrar Reporte'
   }
 }

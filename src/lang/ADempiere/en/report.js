@@ -120,7 +120,7 @@ const report = {
   },
   dialogLegacy: {
     displayOptions: 'Display Options',
-    downloadFiles: 'Download Files',
+    downloadFiles: 'Download Compressed Files',
     showReport: 'Show Report'
   }
 }
