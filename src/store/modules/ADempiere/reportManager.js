@@ -1061,14 +1061,14 @@ const reportManager = {
               fileName: file_name
             })
               .then(data => {
-                if (checkValue === 1) {
+                if (checkValue === 'donwload') {
                   const file = document.createElement('a')
                   file.href = data
                   file.download = `${tableName}`
                   file.target = '_blank'
                   file.click()
                 }
-                if (checkValue === 0) {
+                if (checkValue === 'see') {
                   const recordId = rootGetters.getIdOfContainer({
                     containerUuid,
                     tableName

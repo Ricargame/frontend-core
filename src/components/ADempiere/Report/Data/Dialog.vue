@@ -12,7 +12,7 @@
             <el-col :span="12" style="width: 50%; text-align: center;">
               <el-radio
                 v-model="check"
-                :label="0"
+                label="see"
                 label-position="left"
                 style="font-size: 18px; padding-bottom: 2%"
               >
@@ -23,7 +23,7 @@
             <el-col :span="12" style="width: 50%; text-align: center;">
               <el-radio
                 v-model="check"
-                :label="1"
+                label="donwload"
                 label-position="left"
                 style="font-size: 18px; padding-right: 1%; padding-bottom: 2%"
               >
@@ -86,7 +86,7 @@ export default defineComponent({
     const isLoading = computed(() => {
       return store.getters.getIsLoadingDialog
     })
-    const check = ref(0)
+    const check = ref('see')
     const ids = ref([])
     //
     const showDialog = computed(() => {
@@ -115,7 +115,7 @@ export default defineComponent({
       })
       store.commit('setIsLoadingDialog', true)
       let fileType = 'pdf'
-      if (check.value === 1) {
+      if (check.value === 'donwload') {
         fileType = 'zip'
       }
       store.dispatch('printBarch', {
