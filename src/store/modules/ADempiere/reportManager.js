@@ -701,17 +701,11 @@ const reportManager = {
         type: 'info'
       })
       return new Promise((resolve, reject) => {
-        let filters = getOperatorAndValue({
+        const filters = getOperatorAndValue({
           format: 'array',
           containerUuid,
           fieldsList
         })
-        if (!isEmptyValue(instanceId)) {
-          const filtersArray = JSON.parse(filters)
-          const newFilter = { 'name': 'AD_PInstance_ID', 'operator': 'equal', 'values': instanceId }
-          filtersArray.push(newFilter)
-          filters = JSON.stringify(filtersArray)
-        }
         getView({
           printFormatId,
           reportViewId,
