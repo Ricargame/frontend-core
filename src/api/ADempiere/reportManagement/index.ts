@@ -125,7 +125,6 @@ export function getView({
   printFormatId,
   reportViewId,
   isSummary,
-  instanceId,
   // window
   tableName,
   recordId
@@ -143,8 +142,7 @@ export function getView({
       report_view_id: reportViewId,
       is_summary: isSummary,
       table_name: tableName,
-      record_id: recordId,
-      AD_PInstance_ID: instanceId
+      record_id: recordId
     }
   })
 }
