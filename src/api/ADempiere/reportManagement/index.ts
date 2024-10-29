@@ -231,7 +231,7 @@ export function sendNotification({
 export function printEntitiesBatch({
   tableName,
   reportId,
-  fileType = 'zip',
+  fileType,
   ids
 }) {
   return request({

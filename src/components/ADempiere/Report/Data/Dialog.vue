@@ -114,13 +114,18 @@ export default defineComponent({
         type: 'info'
       })
       store.commit('setIsLoadingDialog', true)
+      let fileType = 'pdf'
+      if (check.value === 1) {
+        fileType = 'zip'
+      }
       store.dispatch('printBarch', {
         tableName: props.tableName,
         reportId: props.process.internal_id,
         ids: ids.value,
         checkValue: check.value,
         containerUuid: props.containerUuid,
-        reportUuid: root.$route.meta.action_uuid
+        reportUuid: root.$route.meta.action_uuid,
+        fileType
       })
         .finally(() => {
           viewShowDialog()
