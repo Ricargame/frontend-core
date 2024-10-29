@@ -35,7 +35,8 @@ const WTrialBalance = {
   yTDBudget: 'Presupuesto Acumulado (YTD)',
   variance: 'Varianza',
   variancePorcent: '% Varianza',
-  titleCollapse: 'Filtro'
+  titleCollapse: 'Filtro',
+  report: 'Generar Reporte'
 }
 
 export default WTrialBalance

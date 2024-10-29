@@ -49,10 +49,11 @@
         >
           <template slot-scope="scope">
             <el-dropdown
-              v-if="header.columnName === 'name'"
+              v-if="header.columnName === 'name' || header.columnName === 'value'"
+              style="font-size: 10px !important"
               :class="classChecker({ row: scope.row, column: header })"
               trigger="click"
-              @command="zoomInWindow(scope.row)"
+              @command="command => handleCommand(command, scope.row)"
             >
               <span>{{ scope.row[header.columnName] }}</span>
               <el-dropdown-menu slot="dropdown">
@@ -60,6 +61,12 @@
                   <i class="el-icon-zoom-in" style="font-weight: bolder;" />
                   <b>
                     {{ $t('page.processActivity.zoomIn') }} {{ ' - ' }} {{ scope.row[header.columnName] }}
+                  </b>
+                </el-dropdown-item>
+                <el-dropdown-item command="report">
+                  <i class="el-icon-printer" style="font-weight: bolder;" />
+                  <b>
+                    {{ $t('form.WTrialBalance.report') }} {{ ' - ' }} {{ scope.row[header.columnName] }}
                   </b>
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -141,6 +148,12 @@ export default defineComponent({
     const budget = computed(() => {
       return store.getters.getBudget
     })
+    const organization = computed(() => {
+      return store.getters.getOrganization
+    })
+    const period = computed(() => {
+      return store.getters.getPeriod
+    })
     // Data Table
     const headerList = ref([
       {
@@ -208,7 +221,7 @@ export default defineComponent({
      * Methods
      */
     function getColumnStyle() {
-      return 'padding: 0; height: 30px; border: none; font-size: 10px '
+      return 'padding: 0; height: 30px; border: none; font-size: 10px !important '
     }
 
     function changeSelections(selection) {
@@ -283,12 +296,48 @@ export default defineComponent({
         }
       })
     }
+    function handleCommand(command, scope) {
+      if (command === 'report') {
+        generateReport(scope)
+        return
+      }
+      zoomInWindow(scope)
+    }
+
+    function generateReport(scope) {
+      const reportUuid = 'a42b154a-fb40-11e8-a479-7a0060f0aa01'
+      store.dispatch('getReportDefinitionFromServer', {
+        id: reportUuid
+      })
+        .then(res => {
+          if (!isEmptyValue(res)) {
+            const reportId = res.internal_id
+            const filters = [
+              { 'name': 'C_AcctSchema_ID', 'operator': 'equal', 'values': 1000001 },
+              { 'name': 'AD_Org_ID', 'operator': 'equal', 'values': organization.value },
+              { 'name': 'PostingType', 'operator': 'equal', 'values': 'A' },
+              { 'name': 'isShowRetainedEarnings', 'operator': 'equal', 'values': false },
+              { 'name': 'C_Period_ID', 'operator': 'equal', 'values': period.value },
+              { 'name': 'Account_ID', 'operator': 'equal', 'values': scope.id }
+            ]
+            store.dispatch('generateReportViwer', {
+              reportType: 'pdf',
+              reportId,
+              filters: JSON.stringify(filters),
+              reportUuid,
+              isSummary: true
+            })
+          }
+        })
+    }
     return {
       //  Computed
       isVisible,
       showPeriod,
       showAccumulated,
       budget,
+      organization,
+      period,
       // Data Table
       listSummary,
       headerList,
@@ -300,7 +349,9 @@ export default defineComponent({
       getSummaries,
       changeView,
       getColumnStyle,
-      zoomInWindow
+      zoomInWindow,
+      generateReport,
+      handleCommand
     }
   }
 })
