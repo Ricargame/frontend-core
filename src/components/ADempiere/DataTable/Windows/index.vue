@@ -116,7 +116,7 @@ import useFullScreenContainer from '@/components/ADempiere/ContainerOptions/Full
 
 // Utils and Helper Methods
 import { isEmptyValue, setRecordPath } from '@/utils/ADempiere/valueUtils.js'
-import { isLookup, isDateField, isWidthColumn, isBooleanField } from '@/utils/ADempiere/references'
+import { isLookup, isDateField, isBooleanField } from '@/utils/ADempiere/references'
 
 export default defineComponent({
   name: 'WindowsTable',
@@ -620,21 +620,16 @@ export default defineComponent({
 
     function widthColumn(fieldAttributes) {
       const { name, display_type } = fieldAttributes
-      const size = 12
+      const size = 8
       const lenght = name.length
-      if (isDateField(display_type)) {
-        return lenght * size * 0.8
-      }
-      if (isWidthColumn(display_type)) {
-        return lenght * size
-      }
+      const sum = (lenght * size) + 50
       if (isBooleanField(display_type)) {
-        return 130
+        if (sum < 140) return 140
       }
-      if (isLookup(display_type)) {
-        return 180
+      if (isDateField(display_type)) {
+        if (sum < 220) return 220
       }
-      return lenght * size
+      return sum
     }
 
     /**
@@ -751,6 +746,7 @@ export default defineComponent({
   }
   .el-table .el-table__cell {
     padding: 0px !important;
+    line-height: 0 !important;
   }
   .el-table .success-row {
     background: #e8f4ff;
@@ -762,13 +758,11 @@ export default defineComponent({
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
+    line-height: 0 !important;
   }
   .el-table .cell:hover {
     border: 1px solid blue;
     overflow: hidden;
-  }
-  .el-table thead tr {
-    height: 40px!important
   }
   .el-table th.el-table__cell > .cell{
     padding-left: 5px !important;
