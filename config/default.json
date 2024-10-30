@@ -8,6 +8,15 @@
   "adempiere": {
     "api": {
       "url": "http://localhost/api/",
+      "url": "http://spdev01.solopapp.com:24600/api",
+      "url": "http://spdev01.solopapp.com:24700/api",
+      "url": "http://spdev01.solopapp.com:24610/api",
+      "url": "http://spdev02.solopapp.com:24817/api",
+      "url": "http://spdev02.solopapp.com:24812/api",
+      "url": "http://192.168.0.109/api",
+      "url": "http://spdev02.solopapp.com:24810/api",
+      "url": "http://spdev02.solopapp.com:24815/api",
+      "url": "http://spdev02.solopapp.com:24814/api",
       "timeout": 99999999
     }
   },

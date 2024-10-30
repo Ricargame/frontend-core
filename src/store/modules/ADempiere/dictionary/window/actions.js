@@ -573,7 +573,7 @@ export default {
                 containerUuid: tabUuid,
                 contextColumnNames: sequenceTab.context_column_names,
                 tabUuid: sequenceTab.uuid,
-                tabId: sequenceTab.id
+                tabId: sequenceTab.internal_id
               })
               resolve([])
             })
@@ -584,7 +584,7 @@ export default {
               containerUuid: tabAssociatedUuid,
               tabUuid: sequenceTab.uuid,
               contextColumnNames: sequenceTab.context_column_names,
-              tabId: sequenceTab.id
+              tabId: sequenceTab.internal_id
             })
           },
           isDisabledDone: ({ parentUuid: tabAssociatedUuid, containerUuid }) => {
