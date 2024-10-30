@@ -621,21 +621,18 @@ export default defineComponent({
     function widthColumn(fieldAttributes) {
       const { name, display_type } = fieldAttributes
       const size = 12
-      let lenght = name.length
+      const lenght = name.length
       if (isDateField(display_type)) {
         return lenght * size * 0.8
       }
       if (isWidthColumn(display_type)) {
-        return lenght * size + 100
+        return lenght * size
       }
       if (isBooleanField(display_type)) {
         return 130
       }
       if (isLookup(display_type)) {
         return 180
-      }
-      if (lenght < 10) {
-        lenght = 10
       }
       return lenght * size
     }
