@@ -60,13 +60,15 @@
                 <el-dropdown-item>
                   <i class="el-icon-zoom-in" style="font-weight: bolder;" />
                   <b>
-                    {{ $t('page.processActivity.zoomIn') }} {{ ' - ' }} {{ scope.row[header.columnName] }}
+                    {{ $t('page.processActivity.zoomIn') }} {{ ' - ' }}
+                    {{ scope.row.name }} {{ ' - ' }} {{ scope.row.value }}
                   </b>
                 </el-dropdown-item>
                 <el-dropdown-item command="report">
                   <i class="el-icon-printer" style="font-weight: bolder;" />
                   <b>
-                    {{ $t('form.WTrialBalance.report') }} {{ ' - ' }} {{ scope.row[header.columnName] }}
+                    {{ $t('form.WTrialBalance.report') }} {{ ' - ' }}
+                    {{ scope.row.name }} {{ ' - ' }} {{ scope.row.value }}
                   </b>
                 </el-dropdown-item>
               </el-dropdown-menu>
