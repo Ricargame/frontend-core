@@ -91,12 +91,15 @@ import {
 } from '@vue/composition-api'
 import lang from '@/lang'
 import store from '@/store'
+import language from '@/lang'
+
 // API Request Methods
 
 // Utils and Helper Methods
 import optionsWtrialBalance from './options'
 import { zoomIn } from '@/utils/ADempiere/coreUtils.js'
 import { isEmptyValue } from '@/utils/ADempiere'
+import { showNotification } from '@/utils/ADempiere/notification.js'
 
 export default defineComponent({
   name: 'WTrialBalance',
@@ -311,9 +314,16 @@ export default defineComponent({
       })
         .then(res => {
           if (!isEmptyValue(res)) {
+            showNotification({
+              title: language.t('notifications.processing'),
+              message: res.name,
+              summary: res.description,
+              type: 'info'
+            })
             const reportId = res.internal_id
+            const filteredData = res.fieldsList.filter(item => item.columnName === 'C_AcctSchema_ID')
             const filters = [
-              { 'name': 'C_AcctSchema_ID', 'operator': 'equal', 'values': 1000001 },
+              { 'name': 'C_AcctSchema_ID', 'operator': 'equal', 'values': filteredData[0].parsedDefaultValue },
               { 'name': 'AD_Org_ID', 'operator': 'equal', 'values': organization.value },
               { 'name': 'PostingType', 'operator': 'equal', 'values': 'A' },
               { 'name': 'isShowRetainedEarnings', 'operator': 'equal', 'values': false },
@@ -325,6 +335,7 @@ export default defineComponent({
               reportId,
               filters: JSON.stringify(filters),
               reportUuid,
+              containerUuid: res.containerUuid,
               isSummary: true
             })
           }
