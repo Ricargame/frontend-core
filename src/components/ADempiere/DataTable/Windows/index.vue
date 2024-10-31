@@ -746,7 +746,7 @@ export default defineComponent({
   }
   .el-table .el-table__cell {
     padding: 0px !important;
-    line-height: 0 !important;
+    line-height: 1 !important;
   }
   .el-table .success-row {
     background: #e8f4ff;
@@ -758,7 +758,7 @@ export default defineComponent({
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
-    line-height: 0 !important;
+    line-height: 1 !important;
   }
   .el-table .cell:hover {
     border: 1px solid blue;
