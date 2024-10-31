@@ -360,7 +360,12 @@ export default defineComponent({
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 10px;
+}
+.el-table .cell p {
+  line-height: 12px !important
+}
+.el-table .cell span {
+  line-height: 15px !important
 }
 </style>
 <style>

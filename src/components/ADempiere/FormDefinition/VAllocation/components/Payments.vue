@@ -167,7 +167,7 @@ import OrganizationTransactionField from '@/components/ADempiere/FormDefinition/
 
 // Utils and Helper Methods
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
-
+import { formatQuantity } from '@/utils/ADempiere/formatValue/numberFormat'
 // API Request Methods
 import {
   requestListCharges
@@ -421,11 +421,11 @@ export default defineComponent({
         const { transaction_type } = list
         if (list.type === 'isInvoce') {
           if (transaction_type.value === 'R') {
-            return -(list.amountApplied)
+            return -(list.open_amount)
           }
-          return list.amountApplied
+          return list.open_amount
         }
-        return list.applied
+        return list.open_amount
       })
       const sumPayment = selectListAll.value.filter(list => {
         return list.type !== 'isInvoce'
@@ -437,17 +437,14 @@ export default defineComponent({
       const initialValueAll = 0
       const sumAllInvoce = sumInvoce.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue)
       const sumAllPayments = sumPayment.reduce((accumulator, currentValue) => accumulator + currentValue, initialValuePayment)
-      const totalSum = [sumAllPayments, sumAllInvoce].reduce((accumulator, currentValue) => accumulator + currentValue, initialValueAll)
-      if (isEmptyValue(sumAllPayments) && !isEmptyValue(sumAllInvoce)) {
-        return sumAllInvoce
-      } else if (!isEmptyValue(sumPayment) && isEmptyValue(sumAllInvoce)) {
-        return sumAllPayments
+      const totalSum = [Math.abs(sumAllPayments), sumAllInvoce].reduce((accumulator, currentValue) => accumulator + currentValue, initialValueAll)
+      if (!isEmptyValue(sumAllInvoce) && sumAllPayments === 0) {
+        return formatQuantity({ value: Math.abs(sumAllInvoce) })
       }
-      if (totalSum < 0) {
-        const totalSumPositive = Math.abs(totalSum)
-        return totalSumPositive
+      if (!isEmptyValue(sumAllPayments) && sumAllInvoce === 0) {
+        return formatQuantity({ value: sumAllPayments })
       }
-      return totalSum
+      return formatQuantity({ value: Math.abs(totalSum) })
     })
     /**
      * Methods
