@@ -304,6 +304,12 @@ const windowManager = {
       sortBy
     }) {
       return new Promise(resolve => {
+        if (isEmptyValue(filters)) {
+          filters = rootGetters.getTabDataFilters({
+            parentUuid,
+            containerUuid
+          })
+        }
         const {
           isParentTab,
           is_has_tree,
