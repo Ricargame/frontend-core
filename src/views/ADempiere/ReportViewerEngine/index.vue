@@ -126,9 +126,13 @@ export default defineComponent({
     const isLoading = ref(false)
     const reportType = ref(DEFAULT_REPORT_TYPE)
     const reportContent = ref('')
+    const storedReportOutput = computed(() => {
+      return store.getters.getReportOutput(reportId)
+    })
     const name = computed(() => {
-      if (isEmptyValue(storedReportDefinition.value) && !isEmptyValue(storedReportOutput.value)) return storedReportOutput.value.name
-      return storedReportDefinition.value.name
+      if (!isEmptyValue(storedReportOutput.value) && !isEmptyValue(storedReportOutput.value.name)) return storedReportOutput.value.name
+      if (!isEmptyValue(storedReportDefinition.value) && !isEmptyValue(storedReportDefinition.value.name)) return storedReportDefinition.value.name
+      return ''
     })
     const containerUuid = computed(() => {
       return reportId.toString()
@@ -136,10 +140,6 @@ export default defineComponent({
     const help = computed(() => {
       if (isEmptyValue(storedReportDefinition.value) && !isEmptyValue(storedReportOutput.value)) return storedReportOutput.value.name
       return storedReportDefinition.value.help
-    })
-
-    const storedReportOutput = computed(() => {
-      return store.getters.getReportOutput(reportId)
     })
 
     const link = computed(() => {
