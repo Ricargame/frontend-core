@@ -619,9 +619,15 @@ export default defineComponent({
     }
 
     function widthColumn(fieldAttributes) {
-      const { name, display_type } = fieldAttributes
+      const { name, display_type, columnName } = fieldAttributes
       const size = 8
       const lenght = name.length
+      if (columnName === 'C_BPartner_ID' || columnName === 'C_Project_ID' || columnName === 'C_BankAccount_ID') {
+        return 300
+      }
+      if (columnName === 'M_Product_ID') {
+        return 400
+      }
       const sum = (lenght * size) + 50
       if (isBooleanField(display_type)) {
         if (sum < 140) return 140
@@ -648,7 +654,6 @@ export default defineComponent({
         loadSelection()
       }
     })
-
     watch(selectionsList, (newValue, oldValue) => {
       if (!isEmptyValue(newValue)) {
         const row = newValue.at()
