@@ -207,10 +207,10 @@ export default defineComponent({
     })
 
     const styleFooterPanel = computed(() => {
-      if (props.isChildTab) {
-        return 'height: 100px !important'
+      if (!props.tabAttributes.isParentTab) {
+        return 'height: 100px'
       }
-      return 'height: 36px'
+      return 'height: 35px'
     })
 
     const recordUuid = computed(() => {
@@ -414,6 +414,9 @@ export default defineComponent({
 </style>
 
 <style>
+#tab-manager .el-tabs--border-card > .el-tabs__content {
+  height: calc(100vh - 175px);
+}
 .el-tabs--border-card > .el-tabs__content {
   /* padding: 15px; */
   overflow: auto;

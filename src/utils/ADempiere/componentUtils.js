@@ -41,7 +41,7 @@ export const LAYOUT_MAX_COLUMNS_PER_ROW = 24
 /**
  * Default columns per row on layout
  */
-export const DEFAULT_COLUMNS_PER_ROW = 3
+export const DEFAULT_COLUMNS_PER_ROW = 4
 
 /**
  * Focusable Fields List

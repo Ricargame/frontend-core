@@ -116,7 +116,7 @@ import useFullScreenContainer from '@/components/ADempiere/ContainerOptions/Full
 
 // Utils and Helper Methods
 import { isEmptyValue, setRecordPath } from '@/utils/ADempiere/valueUtils.js'
-import { isLookup, isDateField, isBooleanField } from '@/utils/ADempiere/references'
+import { isLookup, isDateField, isNumberField, isBooleanField } from '@/utils/ADempiere/references'
 
 export default defineComponent({
   name: 'WindowsTable',
@@ -627,7 +627,12 @@ export default defineComponent({
         if (sum < 140) return 140
       }
       if (isDateField(display_type)) {
-        if (sum < 220) return 220
+        if (sum > 100) return 150
+        return 100
+      }
+      if (isNumberField(display_type)) {
+        if (sum > 125) return 160
+        return 100
       }
       return sum
     }
@@ -746,7 +751,7 @@ export default defineComponent({
   }
   .el-table .el-table__cell {
     padding: 0px !important;
-    line-height: 1 !important;
+    line-height: 1.5 !important;
   }
   .el-table .success-row {
     background: #e8f4ff;
@@ -758,7 +763,7 @@ export default defineComponent({
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
-    line-height: 1 !important;
+    line-height: 1.5 !important;
   }
   .el-table .cell:hover {
     border: 1px solid blue;
