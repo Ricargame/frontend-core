@@ -97,6 +97,6 @@ export default defineComponent({
 
 <style>
 .box-card .el-divider--horizontal {
-  margin: 11px 0px !important;
+  margin: 11px 0px !important
 }
 </style>

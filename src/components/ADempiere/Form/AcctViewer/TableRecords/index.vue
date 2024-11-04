@@ -294,5 +294,6 @@ export default defineComponent({
 <style>
 .tableAcctViewer .el-table__cell {
   padding: 0 !important;
+  line-height: 1 !important;
 }
 </style>
