@@ -21,6 +21,7 @@
     <filter-columns />
     <el-table
       v-loading="isLoadingDataTable"
+      class="tableAcctViewer"
       :data="tableData"
       border
       :element-loading-text="$t('notifications.loading')"
@@ -289,3 +290,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.tableAcctViewer .el-table__cell {
+  padding: 0 !important;
+}
+</style>

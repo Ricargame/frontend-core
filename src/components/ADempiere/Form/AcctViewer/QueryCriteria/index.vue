@@ -94,3 +94,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.box-card .el-divider--horizontal {
+  margin: 11px 0px !important;
+}
+</style>
