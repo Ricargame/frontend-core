@@ -622,7 +622,7 @@ export default defineComponent({
       const { name, display_type, columnName } = fieldAttributes
       const size = 8
       const lenght = name.length
-      if (columnName === 'C_BPartner_ID' || columnName === 'C_Project_ID' || columnName === 'C_BankAccount_ID') {
+      if (['C_BPartner_ID', 'C_Project_ID', 'C_BankAccount_ID'].includes(columnName)) {
         return 300
       }
       if (columnName === 'M_Product_ID') {
