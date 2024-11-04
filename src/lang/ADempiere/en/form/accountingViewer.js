@@ -19,8 +19,8 @@
 const accountingViewer = {
   account: 'Account',
   accountDate: 'Account Date',
-  accountedCredit: 'Accoutend Credit',
-  accountedDebit: 'Accoutend Debit',
+  accountedCredit: 'Credit',
+  accountedDebit: 'Debit',
   accountingSchema: 'Account Schema',
   activity: 'Activity',
   businessPartner: 'Business Partner',
