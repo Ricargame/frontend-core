@@ -72,7 +72,7 @@ const zoomManager = {
             tableName: table_name
           })
 
-          resolve(zoom_windows)
+          resolve(response)
         })
       })
     }

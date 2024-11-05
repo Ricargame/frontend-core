@@ -27,7 +27,10 @@
       @visible-change="loadZoom"
       @command="zoomInWindow"
     >
-      <span class="el-dropdown-link">
+      <el-dropdown v-if="attributes.column_name === 'Record_ID' && !rowData.is_parent && rowData.cells[attributes.code].value !== 0">
+        <span @click="searchZoom(attributes.code, rowData)"><i class="el-icon-zoom-in" style="font-weight: bolder;" /></span>
+      </el-dropdown>
+      <span v-else class="el-dropdown-link">
         {{ displayLabel(attributes, rowData) }}
       </span>
       <el-dropdown-menu
@@ -71,6 +74,7 @@
 </template>
 
 <script>
+import store from '@/store'
 import {
   defineComponent,
   computed,
@@ -87,7 +91,7 @@ import { zoomIn } from '@/utils/ADempiere/coreUtils.js'
 import { isSalesTransaction } from '@/utils/ADempiere/contextUtils'
 
 // API Request Methods
-import { listZoomWindowsRequest } from '@//api/ADempiere/fields/zoom.js'
+import { listZoomWindowsRequest } from '@/api/ADempiere/fields/zoom.js'
 
 export default defineComponent({
   name: 'DataCells',
@@ -167,7 +171,6 @@ export default defineComponent({
       }
       return false
     }
-
     function styleFont(font) {
       let fontStyle = ''
       if (!isEmptyValue(font.color)) {
@@ -293,6 +296,40 @@ export default defineComponent({
         }
       })
     }
+    function searchZoom(code, row) {
+      if (
+        !isEmptyValue(row) &&
+        !isEmptyValue(row.cells) &&
+        !isEmptyValue(row.cells[code])
+      ) {
+        const { table_name, value } = row.cells[code]
+        store.dispatch('getZoomWindowsListFromServer', {
+          tableName: table_name
+        })
+          .then(response => {
+            if (!isEmptyValue(response)) {
+              const { key_column_name, zoom_windows } = response
+              if (!isEmptyValue(key_column_name) && !isEmptyValue(zoom_windows)) {
+                const [{ id }] = zoom_windows
+                newZoom(id, key_column_name, value)
+              }
+            }
+          })
+      }
+    }
+
+    function newZoom(id, columnName, value) {
+      zoomIn({
+        attributeValue: `window_${id}`,
+        attributeName: 'containerKey',
+        query: {
+          [columnName]: value
+        },
+        params: {
+          [columnName]: value
+        }
+      })
+    }
 
     return {
       // Ref
@@ -305,7 +342,9 @@ export default defineComponent({
       displayLabel,
       zoomInWindow,
       shouldHideName,
-      styleFont
+      styleFont,
+      newZoom,
+      searchZoom
     }
   }
 })
