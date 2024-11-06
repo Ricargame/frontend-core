@@ -203,9 +203,10 @@ export default defineComponent({
         summary: process.description,
         type: 'info'
       })
-      store.dispatch('generateReportViwer', {
+      store.dispatch('runReport', {
         containerUuid: process.uuid,
         reportUuid: process.uuid,
+        recordId: recordId.value,
         reportId: process.internal_id,
         printFormatId: command.id,
         tableName: command.table_name,
