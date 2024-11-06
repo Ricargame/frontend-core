@@ -17,7 +17,7 @@
 -->
 
 <template>
-  <el-button-group>
+  <el-button-group style="padding-top: 5%;">
     <el-button
       v-popover:info-field
       type="primary"
