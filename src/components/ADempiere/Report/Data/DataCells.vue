@@ -27,8 +27,10 @@
       @visible-change="loadZoom"
       @command="zoomInWindow"
     >
-      <el-dropdown v-if="attributes.column_name === 'Record_ID' && !rowData.is_parent && rowData.cells[attributes.code].value !== 0">
-        <span @click="searchZoom(attributes.code, rowData)"><i class="el-icon-zoom-in" style="font-weight: bolder;" /></span>
+      <el-dropdown v-if="attributes.column_name === 'Record_ID' && !rowData.is_parent">
+        <span v-if="rowData.cells[attributes.code].value !== 0" @click="searchZoom(attributes.code, rowData)"><i class="el-icon-zoom-in" style="font-weight: bolder;" />
+        </span>
+        <span v-else />
       </el-dropdown>
       <span v-else class="el-dropdown-link">
         {{ displayLabel(attributes, rowData) }}
