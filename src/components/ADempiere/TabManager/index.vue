@@ -680,7 +680,7 @@ export default defineComponent({
       const { containerUuid } = currentTab
       const columnName = store.getters.getFieldFocusColumnName
       const currentFieldFocus = document.getElementById(`${columnName}`)
-      if (!isEmptyValue(currentFieldFocus)) {
+      if (!isEmptyValue(currentFieldFocus) && !isEmptyValue(currentFieldFocus.__vue__) && !isEmptyValue(currentFieldFocus.__vue__.blur)) {
         currentFieldFocus.__vue__.blur()
       }
       store.dispatch('notifyFocusLost', {
@@ -1030,18 +1030,23 @@ export default defineComponent({
         fieldsList: currentTab.fieldsList,
         option: language.t('actionMenu.save')
       }
-
       store.dispatch('fieldListInfo', { info })
-
+      let reccordId = -1
+      const currentReccord = store.getters.getTabCurrentRow({
+        containerUuid: currentTab.containerUuid
+      })
+      if (!isEmptyValue(currentReccord[currentTab.table_name + '_ID'])) {
+        reccordId = currentReccord[currentTab.table_name + '_ID']
+      }
+      const recordUuid = store.getters.getUuidOfContainer(currentTab.containerUuid)
       const currentRoute = router.app._route
-
       store.dispatch('flushPersistenceQueue', {
         parentUuid: currentTab.parentUuid,
         containerUuid: currentTab.containerUuid,
         tabId: currentTab.internal_id,
         tableName: currentTab.table_name,
-        recordUuid: undefined,
-        reccordId: -1
+        recordUuid,
+        reccordId
       })
         .then(response => {
           const {
@@ -1049,7 +1054,10 @@ export default defineComponent({
             query,
             params
           } = currentRoute
-          const { id } = response
+          let id = query.recordId
+          if (!isEmptyValue(response)) {
+            id = response.id
+          }
           // refresh parent tab on document window
           if (!currentTab.isParentTab) {
             const { firstTabUuid } = currentTab
