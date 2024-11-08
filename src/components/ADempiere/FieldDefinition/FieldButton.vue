@@ -17,19 +17,19 @@
 -->
 
 <template>
-  <el-button-group style="padding-top: 30px; display: block !important">
+  <el-button-group style="display: block !important;">
     <el-button
       v-popover:info-field
       type="primary"
       icon="el-icon-warning"
-      style="font-size: 24px;padding-top: 5px;padding-bottom: 5px;padding-left: 6px;padding-right: 6px;"
+      style="font-size: 24px; padding: 5px 6px; margin: 30px 0px;"
     />
     <el-popover
       ref="info-field"
       placement="top"
       trigger="click"
       class="popover-field-options"
-      style="padding: 0px !important; max-width: 400px"
+      style="padding: 0px !important; max-width: 400px;  margin: 30px 0px;"
     >
       <context-info
         :field-attributes="metadata"
@@ -41,6 +41,7 @@
       type="primary"
       plain
       :disabled="isDisabledButton"
+      style="margin: 30px 0px;"
       @click="startProcess"
     >
       <!-- eslint-disable-next-line -->
