@@ -99,7 +99,7 @@
           header-align="center"
         >
           <span slot-scope="scope" class="cell-align-right">
-            {{ scope.row.AmtAcctDr }}
+            {{ scope.row.AmtSourceDr }}
           </span>
         </el-table-column>
         <el-table-column
@@ -108,7 +108,7 @@
           header-align="center"
         >
           <span slot-scope="scope" class="cell-align-right">
-            {{ scope.row.AmtAcctCr }}
+            {{ scope.row.AmtSourceCr }}
           </span>
         </el-table-column>
         <el-table-column
