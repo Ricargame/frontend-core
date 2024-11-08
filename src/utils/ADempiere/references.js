@@ -575,7 +575,8 @@ export const FIELDS_QUANTITY = [
   COSTS_PLUS_PRICES.id,
   INTEGER.id,
   NUMBER.id,
-  QUANTITY.id
+  QUANTITY.id,
+  AMOUNT.id
 ]
 
 /**
