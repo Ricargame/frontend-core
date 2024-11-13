@@ -63,7 +63,12 @@
           </el-col>
         </el-row>
         <el-row slot="reference">
-          <el-col :span="24" style="max-height: 40px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+          <div
+            v-if="(!isEmptyValue(displayedValue) && fieldAttributes.is_encrypted)"
+          >
+            {{ encryptedPassword(displayedValue) }}
+          </div>
+          <el-col v-else :span="24" style="max-height: 40px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
             {{ displayedValue }}
           </el-col>
         </el-row>
@@ -192,7 +197,9 @@ export default defineComponent({
         containerUuid: props.fieldAttributes.containerUuid
       })
     })
-
+    function encryptedPassword(value) {
+      return '•'.repeat(value.length)
+    }
     const displayedValue = computed(() => {
       let currentValue = props.dataRow[columnName.value]
       if (getTypeOfValue(currentValue) === 'OBJECT') {
@@ -272,7 +279,8 @@ export default defineComponent({
       defaulPrecisions,
       imageSourceMedium,
       // Methods
-      copyContent
+      copyContent,
+      encryptedPassword
     }
   }
 })
