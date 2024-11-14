@@ -378,7 +378,7 @@ export default defineComponent({
       return {}
     })
 
-    const reccordId = computed(() => {
+    const recordId = computed(() => {
       if (isEmptyValue(currentTabPanelInfo.value)) return 1
       const { table } = currentTabPanelInfo.value
       const { key_columns, table_name } = table
@@ -616,6 +616,9 @@ export default defineComponent({
           containerUuid
         })
       }
+      const contextAttributes = store.getters.getTabData({
+        containerUuid: currentRoute.query.containerUuid
+      }).contextAttributes
       store.dispatch('getEntities', {
         parentUuid: props.parentUuid,
         tabUuid: routerParams.containerUuid,
@@ -623,7 +626,8 @@ export default defineComponent({
         filters,
         referenceUuid: query.referenceUuid,
         filtersRecord,
-        pageNumber
+        pageNumber,
+        contextAttributes
       }).then(responseData => {
         if (isCreateNew.value || isEmptyValue(responseData)) {
         // set values in panel
@@ -664,6 +668,7 @@ export default defineComponent({
         const recordId = currentRecordId.value
         setValuesPath({
           query: {
+            action: responseData.uuid,
             ...currentRoute.query,
             recordId
           },
@@ -680,8 +685,20 @@ export default defineComponent({
       const { containerUuid } = currentTab
       const columnName = store.getters.getFieldFocusColumnName
       const currentFieldFocus = document.getElementById(`${columnName}`)
-      if (!isEmptyValue(currentFieldFocus) && !isEmptyValue(currentFieldFocus.__vue__) && !isEmptyValue(currentFieldFocus.__vue__.blur)) {
-        currentFieldFocus.__vue__.blur()
+      if (
+        !isEmptyValue(currentFieldFocus) &&
+        !isEmptyValue(currentFieldFocus.__vue__)
+      ) {
+        if (
+          !isEmptyValue(currentFieldFocus.__vue__.customFocusLost)
+        ) {
+          currentFieldFocus.__vue__.customFocusLost()
+        }
+        if (
+          !isEmptyValue(currentFieldFocus.__vue__.blur)
+        ) {
+          currentFieldFocus.__vue__.blur()
+        }
       }
       store.dispatch('notifyFocusLost', {
         containerUuid,
@@ -1030,23 +1047,24 @@ export default defineComponent({
         fieldsList: currentTab.fieldsList,
         option: language.t('actionMenu.save')
       }
+
       store.dispatch('fieldListInfo', { info })
-      let reccordId = -1
+      const currentRoute = router.app._route
+      let recordId = -1
       const currentReccord = store.getters.getTabCurrentRow({
         containerUuid: currentTab.containerUuid
       })
       if (!isEmptyValue(currentReccord[currentTab.table_name + '_ID'])) {
-        reccordId = currentReccord[currentTab.table_name + '_ID']
+        recordId = currentReccord[currentTab.table_name + '_ID']
       }
       const recordUuid = store.getters.getUuidOfContainer(currentTab.containerUuid)
-      const currentRoute = router.app._route
       store.dispatch('flushPersistenceQueue', {
         parentUuid: currentTab.parentUuid,
         containerUuid: currentTab.containerUuid,
         tabId: currentTab.internal_id,
         tableName: currentTab.table_name,
         recordUuid,
-        reccordId
+        recordId
       })
         .then(response => {
           const {
@@ -1143,7 +1161,7 @@ export default defineComponent({
       containerInfo,
       currentTabPanelInfo,
       emptyMandatoryFields,
-      reccordId,
+      recordId,
       // methods
       theAction,
       handleClick,
