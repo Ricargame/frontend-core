@@ -41,10 +41,11 @@ import store from '@/store'
 import PanThumb from '@/components/PanThumb'
 
 // Constants
-import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
+// import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
 
-// // Utils and Helper Methods
-import { pathImageWindows } from '@/utils/ADempiere/resource.js'
+// // // Utils and Helper Methods
+// import { pathImageWindows } from '@/utils/ADempiere/resource.js'
+import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
 
 export default defineComponent({
   components: {
@@ -90,13 +91,9 @@ export default defineComponent({
     })
 
     const imageUrl = computed(() => {
-      return pathImageWindows({
-        clientId: clientId.value,
-        tableName: TABLE_NAME_USER,
-        recordId: userInfo.value.id,
-        columnName: COLUMN_NAME,
-        resourceName: `${COLUMN_NAME}.png`
-      })
+      const url = store.getters['user/getUserUrl']
+      if (!isEmptyValue(url)) return url
+      return require('@/image/ADempiere/avatar/no-avatar.png')
     })
 
     avatarResize.value = require('@/image/ADempiere/avatar/no-avatar.png')

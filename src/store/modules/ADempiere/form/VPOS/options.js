@@ -1199,7 +1199,7 @@ export default {
         })
           .then(response => {
             dispatch('setModalDialogVPOS', {
-              title: lang.t('form.pos.optionsPoinSales.cashManagement.closeBox'),
+              title: lang.t('form.pos.optionsPoinSales.cashManagement.closeBox') + '(' + response.document_no + ')',
               type: 'success',
               doneMethod: () => {
                 commit('setShowedModalDialogVPOS', {

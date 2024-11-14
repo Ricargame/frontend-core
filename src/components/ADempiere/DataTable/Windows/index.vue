@@ -625,6 +625,9 @@ export default defineComponent({
       if (['C_BPartner_ID', 'C_Project_ID', 'C_BankAccount_ID'].includes(columnName)) {
         return 300
       }
+      if (columnName === 'Name') {
+        return 200
+      }
       if (columnName === 'M_Product_ID') {
         return 400
       }

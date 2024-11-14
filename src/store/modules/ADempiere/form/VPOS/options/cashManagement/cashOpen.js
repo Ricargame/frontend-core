@@ -217,6 +217,14 @@ export default {
             commit('setShowedModalDialogVPOS', {
               isShowed: false
             })
+            commit('setAttributeCashOpenFields', {
+              attribute: 'description',
+              value: ''
+            })
+            commit('setAttributeCashOpenFields', {
+              attribute: 'collectionAgent',
+              value: undefined
+            })
             dispatch('setModalDialogVPOS', {
               title: lang.t('form.pos.optionsPoinSales.cashManagement.cashOpenBox'),
               type: 'success',

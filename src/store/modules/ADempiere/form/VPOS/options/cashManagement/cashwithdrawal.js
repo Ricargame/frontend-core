@@ -56,6 +56,16 @@ export default {
     },
     setCashWithdrawalPayments(state, payments) {
       state.payments = payments
+    },
+    changeAttributeCollectionAgentCashWithdrawal(state, {
+      value
+    }) {
+      state.field.collectionAgent = value
+    },
+    changeAttributeDescriptionCashWithdrawal(state, {
+      value
+    }) {
+      state.field.description = value
     }
   },
   actions: {
@@ -218,6 +228,7 @@ export default {
             commit('setShowedModalDialogVPOS', {
               isShowed: false
             })
+            dispatch('cleanCashWithdrawal')
             dispatch('setModalDialogVPOS', {
               title: lang.t('form.pos.optionsPoinSales.cashManagement.successfulCashWithdrawal'),
               type: 'success',
@@ -238,6 +249,7 @@ export default {
               componentPath: () => import('@/components/ADempiere/Form/VPOS2/Options/cashManagement/cashWithdrawal/info.vue'),
               isShowed: true
             })
+            resolve()
           })
           .catch(error => {
             console.warn(`Process Cash Withdrawal: ${error.message}. Code: ${error.code}.`)
@@ -264,6 +276,16 @@ export default {
             })
             resolve({})
           })
+      })
+    },
+    cleanCashWithdrawal({
+      commit
+    }) {
+      commit('changeAttributeCollectionAgentCashWithdrawal', {
+        value: ''
+      })
+      commit('changeAttributeDescriptionCashWithdrawal', {
+        value: ''
       })
     }
   },

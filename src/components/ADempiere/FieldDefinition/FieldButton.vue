@@ -17,19 +17,19 @@
 -->
 
 <template>
-  <el-button-group>
+  <el-button-group style="display: block !important;">
     <el-button
       v-popover:info-field
       type="primary"
       icon="el-icon-warning"
-      style="font-size: 24px;padding-top: 5px;padding-bottom: 5px;padding-left: 6px;padding-right: 6px;"
+      style="font-size: 24px; padding: 5px 6px; margin: 30px 0px;"
     />
     <el-popover
       ref="info-field"
       placement="top"
       trigger="click"
       class="popover-field-options"
-      style="padding: 0px !important; max-width: 400px"
+      style="padding: 0px !important; max-width: 400px;  margin: 30px 0px;"
     >
       <context-info
         :field-attributes="metadata"
@@ -41,6 +41,7 @@
       type="primary"
       plain
       :disabled="isDisabledButton"
+      style="margin: 30px 0px;"
       @click="startProcess"
     >
       <!-- eslint-disable-next-line -->
@@ -62,7 +63,7 @@ import fieldMixinDisplayColumn from '@/components/ADempiere/FieldDefinition/mixi
 import {
   TRUE_STRING, FALSE_STRING
 } from '@/utils/ADempiere/formatValue/booleanFormat'
-import { RECORD_ID } from '@/utils/ADempiere/constants/systemColumns'
+import { COLUMNNAME_Record_ID } from '@/utils/ADempiere/constants/systemColumns'
 import { IDENTIFIER_COLUMN_SUFFIX } from '@/utils/ADempiere/dictionaryUtils'
 
 // Utils and Helpers Methods
@@ -104,7 +105,7 @@ export default {
 
   computed: {
     isDisabledButton() {
-      return (this.metadata.readonly || this.isDisableAction) && !['Posted', RECORD_ID].includes(this.metadata.columnName)
+      return (this.metadata.readonly || this.isDisableAction) && !['Posted', COLUMNNAME_Record_ID].includes(this.metadata.columnName)
     },
     isDisableAction() {
       return this.actionAssociated.isEnabled && !this.actionAssociated.isEnabled()
@@ -168,7 +169,7 @@ export default {
             return isShowAcct
           }
         }
-      } else if (this.metadata.columnName === RECORD_ID) {
+      } else if (this.metadata.columnName === COLUMNNAME_Record_ID) {
         return {
           // is: 'svg-icon',
           // 'icon-class': 'zoom-in',
@@ -326,7 +327,7 @@ export default {
     },
 
     currentTableId() {
-      if (this.metadata.displayed && this.metadata.columnName === RECORD_ID) {
+      if (this.metadata.displayed && this.metadata.columnName === COLUMNNAME_Record_ID) {
         const { containerUuid, inTable } = this.metadata
         // table records values
         if (inTable) {
@@ -352,7 +353,7 @@ export default {
 
   watch: {
     contextAttributes(newValue, oldValue) {
-      if (this.metadata.columnName === RECORD_ID && !isSameValues(newValue, oldValue)) {
+      if (this.metadata.columnName === COLUMNNAME_Record_ID && !isSameValues(newValue, oldValue)) {
         if (!isEmptyValue(newValue)) {
           this.setDefaultValue()
         }
@@ -368,7 +369,7 @@ export default {
   },
 
   beforeMount() {
-    if (this.metadata.displayed && this.metadata.columnName === RECORD_ID) {
+    if (this.metadata.displayed && this.metadata.columnName === COLUMNNAME_Record_ID) {
       if (!this.emptyValue && typeof this.value === 'number') {
         if (isEmptyValue(this.displayedValue)) {
           // request lookup

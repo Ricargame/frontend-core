@@ -24,7 +24,7 @@
     :rows="rows"
     :type="typeTextBox"
     :maxlength="maxLength"
-    :show-password="Boolean(metadata.isEncrypted)"
+    :show-password="Boolean(metadata.is_encrypted)"
     :autofocus="metadata.inTable"
     :size="sizeField"
     show-word-limit

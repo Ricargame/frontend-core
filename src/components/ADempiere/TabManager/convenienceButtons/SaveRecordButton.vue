@@ -40,13 +40,12 @@ import { computed, defineComponent, ref } from '@vue/composition-api'
 
 import store from '@/store'
 import language from '@/lang'
-import router from '@/router'
 
 // Constants
 import { LOG_COLUMNS_NAME_LIST } from '@/utils/ADempiere/constants/systemColumns'
 
 // Utils and Melper Methods
-import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+import { isEmptyValue, setRecordPath } from '@/utils/ADempiere/valueUtils'
 import { showMessage } from '@/utils/ADempiere/notification'
 import { refreshRecord } from '@/utils/ADempiere/dictionary/window'
 
@@ -114,15 +113,20 @@ export default defineComponent({
       return isExistsChanges.value
     })
 
-    const reccordId = computed(() => {
+    const recordId = computed(() => {
       const { table } = tabAttributes.value
       const { key_columns, table_name } = table
       const currentReccord = store.getters.getTabCurrentRow({
         containerUuid: tabAttributes.value.containerUuid
       })
-      if (!isEmptyValue(currentReccord[table_name + '_ID'])) return currentReccord[table_name + '_ID']
-      if (!isEmptyValue(key_columns)) return currentReccord[key_columns[key_columns.length - 1]]
-      return 1
+      if (!isEmptyValue(currentReccord[table_name + '_ID'])) {
+        return currentReccord[table_name + '_ID']
+      }
+      if (!isEmptyValue(key_columns)) {
+        const keyIndex = key_columns.length - 1
+        return currentReccord[key_columns.at(keyIndex)]
+      }
+      return -1
     })
 
     function saveChanges() {
@@ -143,22 +147,15 @@ export default defineComponent({
       store.dispatch('fieldListInfo', { info })
       isSaveRecordLoading.value = true
 
-      const currentRoute = router.app._route
       store.dispatch('flushPersistenceQueue', {
         parentUuid: props.parentUuid,
         containerUuid: props.containerUuid,
         tabId: tabAttributes.value.internal_id,
         tableName: tabAttributes.value.table_name,
         recordUuid: recordUuid.value,
-        reccordId: reccordId.value
+        recordId: recordId.value
       })
         .then(response => {
-          const {
-            name,
-            query,
-            params
-          } = currentRoute
-          const { id } = response
           // refresh parent tab on document window
           if (!tabAttributes.value.isParentTab) {
             const { firstTabUuid } = tabAttributes.value
@@ -173,19 +170,10 @@ export default defineComponent({
               })
             }
           }
-
-          router.replace({
-            name,
-            query: {
-              ...query,
-              recordId: id,
-              filters: []
-            },
-            params: {
-              ...params,
-              filters: []
-            }
-          }, () => {})
+          setRecordPath({
+            action: response.uuid,
+            recordId: response.id
+          })
         })
         .catch(error => {
           // console.error('Error saving record', error.message)

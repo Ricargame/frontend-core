@@ -30,7 +30,7 @@
       label-position="left"
     >
       <el-row>
-        <el-col :span="4">
+        <el-col :span="11" :offset="5">
           <img
             :src="logo"
             class="image"
@@ -426,8 +426,8 @@ export default {
 
 <style lang="scss">
 .image {
-  width: 80px;
-  height: 80px;
+  // width: 80px;
+  height: 110px;
 }
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */

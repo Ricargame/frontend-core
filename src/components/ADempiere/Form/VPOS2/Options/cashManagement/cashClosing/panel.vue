@@ -59,6 +59,21 @@ along with this program. If not, see <https:www.gnu.org/licenses/>.
       :label="$t('form.pos.collect.paymentMethod')"
     />
     <el-table-column
+      v-if="!isRefund"
+      prop="is_refund"
+      width="180"
+      :label="$t('form.VBankStatementMatch.automaticMatch.table.tenderType')"
+    >
+      <template slot-scope="scope">
+        <b v-if="scope.row.is_refund" style="color: #ff4949">
+          {{ $t('form.pos.optionsPoinSales.cashManagement.moneyEgress') }}
+        </b>
+        <b v-else style="color: #13ce66">
+          {{ $t('form.pos.optionsPoinSales.cashManagement.moneyIncome') }}
+        </b>
+      </template>
+    </el-table-column>
+    <el-table-column
       prop="currency.iso_code"
       :label="$t('form.pos.collect.Currency')"
     />
@@ -74,13 +89,14 @@ along with this program. If not, see <https:www.gnu.org/licenses/>.
 </template>
 
 <script>
-import { defineComponent, computed } from '@vue/composition-api'
+import { defineComponent, computed, ref } from '@vue/composition-api'
 import { formatPrice } from '@/utils/ADempiere/formatValue/numberFormat'
 import store from '@/store'
 
 export default defineComponent({
   name: 'cashClosingPanel',
   setup() {
+    const isRefund = ref(false)
     const listCashSummary = computed(() => {
       return store.getters.getAttributeCashClosings({
         attribute: 'listSummary'
@@ -100,6 +116,7 @@ export default defineComponent({
     })
 
     return {
+      isRefund,
       isLoading,
       isDetails,
       listCashSummary,

@@ -51,7 +51,12 @@ export default defineComponent({
   },
   setup(props) {
     const listCurrencies = computed(() => {
-      return store.getters.getAvailableCurrencies.listCurrencies
+      const { listCurrencies } = store.getters.getAvailableCurrencies
+      if (!isEmptyValue(listCurrencies)) return listCurrencies
+      const currencyDefault = store.getters.getAttributeCashOpenFields({
+        attribute: 'currency'
+      })
+      return [currencyDefault]
     })
 
     const currency = computed({

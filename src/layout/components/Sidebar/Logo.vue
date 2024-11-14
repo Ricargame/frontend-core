@@ -71,10 +71,10 @@ import router from '@/router'
 import store from '@/store'
 
 // Utils and Helper Methods
-import { pathImageWindows } from '@/utils/ADempiere/resource'
+// import { pathImageWindows } from '@/utils/ADempiere/resource'
 
-// Constants
-import { COLUMN_NAME, TABLE_NAME_CLIENT } from '@/utils/ADempiere/constants/resoucer.ts'
+// // Constants
+// import { COLUMN_NAME, TABLE_NAME_CLIENT } from '@/utils/ADempiere/constants/resoucer.ts'
 
 export default defineComponent({
   name: 'SidebarLogo',
@@ -112,13 +112,7 @@ export default defineComponent({
     })
 
     const imageUrl = computed(() => {
-      return pathImageWindows({
-        clientId: client.value.uuid,
-        tableName: TABLE_NAME_CLIENT,
-        recordId: client.value.id,
-        columnName: COLUMN_NAME,
-        resourceName: `${COLUMN_NAME}.png`
-      })
+      return store.getters['user/getLogoUrl']
     })
 
     function profile() {

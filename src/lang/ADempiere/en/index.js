@@ -328,6 +328,7 @@ export default {
           unassignSeller: 'Unassign Seller',
           transfer: 'Transfer',
           moneyIncome: 'Income',
+          moneyEgress: 'Egress',
           cashOpenBox: 'Cashbox Opened',
           cashwithdrawal: 'Withdrawal',
           successfulCashWithdrawal: 'Cash withdrawal successful',

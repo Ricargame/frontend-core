@@ -197,7 +197,7 @@ export default {
 
       const value = this.$store.getters.getValueOfField({
         parentUuid: this.metadata.parentUuid,
-        containerUuid: this.metadata.containerUuid,
+        containerUuid: this.metadata.firstTabUuid,
         columnName
       })
       // types `decimal` and `date` is a object struct

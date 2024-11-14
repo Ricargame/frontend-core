@@ -572,6 +572,7 @@ export const FIELDS_AMOUNT = [
 ]
 
 export const FIELDS_QUANTITY = [
+  AMOUNT.id,
   COSTS_PLUS_PRICES.id,
   INTEGER.id,
   NUMBER.id,

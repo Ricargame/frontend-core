@@ -7,14 +7,7 @@
           crossorigin="anonymous"
           fit="scale-down"
           class="circle-image"
-        >
-          <div slot="error" class="image-slot">
-            <img
-              :src="imageDefault"
-              class="circle-image"
-            >
-          </div>
-        </el-image>
+        />
       </el-col>
     </el-row>
     <roles-navbar />
@@ -34,7 +27,7 @@ import RolesNavbar from '@/views/profile/components/RolesNavbar'
 import { pathImageWindows } from '@/utils/ADempiere/resource'
 
 // Constants
-import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
+// import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
 
 export default defineComponent({
   name: 'ProfilePreview',
@@ -97,13 +90,7 @@ export default defineComponent({
     })
 
     const imageURL = computed(() => {
-      return pathImageWindows({
-        clientId: clientId.value,
-        tableName: TABLE_NAME_USER,
-        recordId: userInfo.value.id,
-        columnName: COLUMN_NAME,
-        resourceName: `${COLUMN_NAME}.png`
-      })
+      return store.getters['user/getUserUrl']
     })
 
     const avatarResize = ref('')

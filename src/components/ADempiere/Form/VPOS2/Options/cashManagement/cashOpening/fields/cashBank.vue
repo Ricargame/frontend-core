@@ -23,6 +23,7 @@ along with this program. If not, see <https:www.gnu.org/licenses/>.
     <el-select
       v-model="cashBank"
       style="width: 100%;"
+      clearable
       @visible-change="findSeller"
     >
       <el-option

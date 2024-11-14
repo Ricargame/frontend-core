@@ -328,6 +328,7 @@ export default {
           cashwithdrawal: 'Retiro',
           transfer: 'Transferencia',
           moneyIncome: 'Ingreso',
+          moneyEgress: 'Egreso',
           successfulCashWithdrawal: 'Retiro de caja exitoso',
           cashCloseBox: 'Caja Cerrada',
           closeBox: 'Cierre',

@@ -1,9 +1,9 @@
 import store from '@/store'
 // Constants
-import { COLUMN_NAME, TABLE_NAME_CLIENT } from '@/utils/ADempiere/constants/resoucer.ts'
+// import { COLUMN_NAME, TABLE_NAME_CLIENT } from '@/utils/ADempiere/constants/resoucer.ts'
 // Utils and Helper Methods
 import getPageTitle from '@/utils/get-page-title'
-import { pathImageWindows } from '@/utils/ADempiere/resource'
+// import { pathImageWindows } from '@/utils/ADempiere/resource'
 import { isEmptyValue } from '@/utils/ADempiere'
 
 function getPageFavicon({
@@ -60,13 +60,7 @@ export function setSessionValues({
 
   if (isEmptyValue(client)) return
   const link = getPageFavicon({
-    logo: pathImageWindows({
-      clientId: client.uuid,
-      tableName: TABLE_NAME_CLIENT,
-      recordId: client.id,
-      columnName: COLUMN_NAME,
-      resourceName: `${COLUMN_NAME}.png`
-    })
+    logo: store.getters.getLogoUrl
   })
   document.head.appendChild(link)
 }

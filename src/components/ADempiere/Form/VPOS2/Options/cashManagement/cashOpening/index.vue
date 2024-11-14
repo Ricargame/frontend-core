@@ -49,6 +49,24 @@ export default defineComponent({
         title: lang.t('form.pos.optionsPoinSales.cashManagement.cashOpening'),
         doneMethod: () => {
           store.dispatch('cashOpening')
+            .finally(() => {
+              store.commit('setAttributeCashOpenFields', {
+                attribute: 'collectionAgent',
+                value: undefined
+              })
+              store.commit('setAttributeCashOpenFields', {
+                attribute: 'amount',
+                value: 0
+              })
+              store.commit('setAttributeCashOpenFields', {
+                attribute: 'cashBank',
+                value: undefined
+              })
+              store.commit('setAttributeCashOpenFields', {
+                attribute: 'description',
+                value: ''
+              })
+            })
         },
         isDisabledDone: () => {
           return isEmptyValue(store.getters.getAttributeCashOpenFields({

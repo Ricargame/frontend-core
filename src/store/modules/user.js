@@ -50,8 +50,9 @@ import { getCurrencyPrecision, getUnitOfMeasure } from '@/api/ADempiere/system-c
 
 // Utils and Helper Methods
 import { resetRouter } from '@/router'
-import { showMessage } from '@/utils/ADempiere/notification'
 import { isEmptyValue } from '@/utils/ADempiere/valueUtils'
+import { showMessage } from '@/utils/ADempiere/notification'
+import { pathImageWindows } from '@/utils/ADempiere/resource'
 import { camelizeObjectKeys } from '@/utils/ADempiere/transformObject.js'
 import { convertObjectToKeyValue } from '@/utils/ADempiere/valueFormat.js'
 import {
@@ -61,6 +62,8 @@ import {
   getCurrentOrganization, setCurrentOrganization, removeCurrentOrganization,
   getCurrentWarehouse, setCurrentWarehouse, removeCurrentWarehouse
 } from '@/utils/auth'
+// Constants
+import { COLUMN_NAME, TABLE_NAME_CLIENT, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
 
 const state = {
   token: getToken(),
@@ -86,7 +89,9 @@ const state = {
   s3Version: {},
   precisionContext: {},
   precisionUOMContext: {},
-  reportEngineVersion: {}
+  reportEngineVersion: {},
+  logoUrl: 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4',
+  userImageUrl: ''
 }
 
 const mutations = {
@@ -161,6 +166,12 @@ const mutations = {
   },
   setUOMPrecision(state, precision) {
     state.precisionUOMContext = precision
+  },
+  setLogo(state, url) {
+    state.logoUrl = url
+  },
+  setUserImage(state, url) {
+    state.userImageUrl = url
   }
 }
 
@@ -308,6 +319,12 @@ const actions = {
           })
 
           dispatch('getRolesListFromServer')
+            .finally(() => {
+              dispatch('searchImageLogoOnServer')
+              dispatch('searchImageUserOnServer', {
+                userInfo
+              })
+            })
         })
         .catch(error => {
           console.warn(`Error ${error.code} getting context session: ${error.message}.`)
@@ -893,6 +910,48 @@ const actions = {
           resolve(systemInfo)
         })
     })
+  },
+  searchImageLogoOnServer({ commit, getters }) {
+    const { client } = getters.getRole
+    const url = pathImageWindows({
+      clientId: client.uuid,
+      tableName: TABLE_NAME_CLIENT,
+      recordId: client.id,
+      columnName: COLUMN_NAME,
+      resourceName: `${COLUMN_NAME}.png`
+    })
+    fetch(url)
+      .then((responseImage) => {
+        if (responseImage.ok) {
+          commit('setLogo', url)
+          return
+        }
+        commit('setLogo', 'https://avatars1.githubusercontent.com/u/1263359?s=200&v=4')
+      })
+  },
+  async searchImageUserOnServer({ commit, getters }, {
+    userInfo
+  }) {
+    // const { userInfo } = getters.userInfo
+    const url = pathImageWindows({
+      clientId: userInfo.client_uuid,
+      tableName: TABLE_NAME_USER,
+      recordId: userInfo.id,
+      columnName: COLUMN_NAME,
+      resourceName: `${COLUMN_NAME}.png`
+    })
+    try {
+      fetch(url)
+        .then((responseImage) => {
+          if (responseImage.ok) {
+            commit('setUserImage', url)
+            return
+          }
+          commit('setUserImage', '')
+        })
+    } catch (error) {
+      console.error('Error al validar la URL:', error)
+    }
   }
 }
 
@@ -966,6 +1025,12 @@ const getters = {
   },
   getUOMPrecision: (state) => {
     return state.precisionUOMContext
+  },
+  getLogoUrl: (state) => {
+    return state.logoUrl
+  },
+  getUserUrl: (state) => {
+    return state.userImageUrl
   }
 }
 

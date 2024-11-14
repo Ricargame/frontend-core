@@ -167,12 +167,16 @@ export default {
                   // close current page
                   if (!isEmptyValue(parentUuid)) {
                     const currentRoute = router.app._route
+                    const { query } = currentRoute
                     const tabViewsVisited = rootGetters.visitedViews
                     dispatch('tagsView/delView', currentRoute)
                     // go to back page
                     const oldRouter = tabViewsVisited[tabViewsVisited.length - 1]
                     router.push({
-                      path: oldRouter.path
+                      name: oldRouter.name,
+                      query: {
+                        ...query
+                      }
                     }, () => {})
                   }
                 }).finally(() => {

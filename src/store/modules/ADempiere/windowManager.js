@@ -301,7 +301,8 @@ const windowManager = {
       isAdvancedQuery = false,
       pageNumber,
       pageSize = ROWS_OF_RECORDS_BY_PAGE_HIGH,
-      sortBy
+      sortBy,
+      contextAttributes
     }) {
       return new Promise(resolve => {
         if (isEmptyValue(filters)) {
@@ -467,8 +468,7 @@ const windowManager = {
           pageToken = ''
         }
 
-        let contextAttributes = '{}'
-        if (!isEmptyValue(contextAttributesList)) {
+        if (!isEmptyValue(contextAttributesList) && isEmptyValue(contextAttributes)) {
           contextAttributes = JSON.stringify(contextAttributesList)
         }
         let listFilters
@@ -525,7 +525,6 @@ const windowManager = {
                 rowIndex
               }
             })
-
             let currentRecordUuid, currentRecordId
             // update current record
             if (!isEmptyValue(dataToStored)) {
@@ -580,7 +579,6 @@ const windowManager = {
                 attributes,
                 isOverWriteParent: isParentTab
               })
-
               // Always overwrite key values on parent context
               const relatedColumnsList = fieldsList
                 .filter(fieldItem => {
@@ -639,8 +637,7 @@ const windowManager = {
               isLoaded: true,
               isLoading: false,
               recordCount: dataResponse.recordCount,
-              sortBy,
-              contextAttributes
+              sortBy
             })
 
             if (isEmptyValue(dataToStored)) {
@@ -674,8 +671,7 @@ const windowManager = {
             commit('setTabData', {
               parentUuid,
               isLoaded: true,
-              containerUuid,
-              contextAttributes
+              containerUuid
             })
             commit('setIsLoadingTabRecordsList', {
               containerUuid,

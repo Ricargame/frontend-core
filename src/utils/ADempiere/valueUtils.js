@@ -957,7 +957,7 @@ export function getValidInteger(value, is_identifier = false) {
 }
 
 /**
- * Assign record id to path
+ * Assign record id in WIndows to path
  * @param {string} tab
  * @param {number} recordId
  * @param {string} tabChild
@@ -965,6 +965,7 @@ export function getValidInteger(value, is_identifier = false) {
  */
 export function setRecordPath({
   tab,
+  action,
   recordId,
   tabChild,
   recordChildId
@@ -975,6 +976,7 @@ export function setRecordPath({
     query: {
       ...query,
       tab,
+      action,
       recordId,
       tabChild,
       recordChildId

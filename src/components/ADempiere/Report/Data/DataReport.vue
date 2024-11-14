@@ -463,7 +463,7 @@ export default defineComponent({
         let sum = 0
         cells.forEach(e => {
           const dataCell = e.cells[columnCode]
-          if (!isEmptyValue(dataCell) && dataCell.sum_value) {
+          if (!isEmptyValue(dataCell) && dataCell.sum_value && e.level > 1) {
             const value = dataCell?.value?.value
             if (!isEmptyValue(value) && parseFloat(value) !== 0) {
               sum += parseFloat(value)

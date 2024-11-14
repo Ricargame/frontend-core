@@ -104,9 +104,9 @@ import HeaderNotification from '@/components/ADempiere/HeaderNotification'
 import Driver from 'driver.js' // import driver.js
 import 'driver.js/dist/driver.min.css' // import driver.js css
 // Constants
-import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
-// Utils and Helper Methods
-import { pathImageWindows } from '@/utils/ADempiere/resource.js'
+// import { COLUMN_NAME, TABLE_NAME_USER } from '@/utils/ADempiere/constants/resoucer.ts'
+// // Utils and Helper Methods
+// import { pathImageWindows } from '@/utils/ADempiere/resource.js'
 
 export default {
   components: {
@@ -138,13 +138,7 @@ export default {
       return client_uuid
     },
     imageUrl() {
-      return pathImageWindows({
-        clientId: this.clientUuid,
-        tableName: TABLE_NAME_USER,
-        recordId: this.userInfo.id,
-        columnName: COLUMN_NAME,
-        resourceName: `${COLUMN_NAME}.png`
-      })
+      return this.$store.getters['user/getUserUrl']
     },
     isMobile() {
       return this.$store.state.app.device === 'mobile'

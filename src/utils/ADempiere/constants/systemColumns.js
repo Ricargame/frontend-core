@@ -30,7 +30,13 @@ export const UUID = 'UUID'
 
 export const ID = 'ID'
 
+export const COLUMNNAME_AD_Table_ID = 'AD_Table_ID'
+
+/**
+ * @deprecated
+ */
 export const RECORD_ID = 'Record_ID'
+export const COLUMNNAME_Record_ID = 'Record_ID'
 
 export const COUNTRY = 'C_Country_ID'
 
@@ -48,9 +54,17 @@ export const VALUE = 'Value'
 
 export const DOCUMENT_NO = 'DocumentNo'
 
+/**
+ * @deprecated
+ */
 export const DOCUMENT_STATUS = 'DocStatus'
+export const COLUMNNAME_DocStatus = 'DocStatus'
 
+/**
+ * @deprecated
+ */
 export const DOCUMENT_ACTION = 'DocAction'
+export const COLUMNNAME_DocAction = 'DocAction'
 
 export const STD_PRECISION = 'StdPrecision'
 

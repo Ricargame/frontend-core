@@ -728,8 +728,8 @@ export const deleteRecord = {
         }
       }
       const isNotEditableAnyRecord = selectionsRecords.some(record => {
-        return record[CLIENT] !== preferenceClientId ||
-          !record[ACTIVE] || record[PROCESSED] || record[PROCESSING]
+        return record[CLIENT] !== preferenceClientId || convertStringToBoolean(record[PROCESSED]) || convertStringToBoolean(record[PROCESSING])
+        // record[PROCESSED] || convertStringToBoolean(record[PROCESSING])
       })
       if (isNotEditableAnyRecord) {
         return false

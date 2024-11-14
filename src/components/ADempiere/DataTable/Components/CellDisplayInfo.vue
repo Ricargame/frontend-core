@@ -170,7 +170,10 @@ export default defineComponent({
     const isPreviewImage = ref(false)
 
     const columnName = computed(() => {
-      return props.fieldAttributes.column_name
+      if (!isEmptyValue(props.fieldAttributes.column_name)) {
+        return props.fieldAttributes.column_name
+      }
+      return props.fieldAttributes.columnName
     })
     // const elementName = computed(() => {
     //   return props.fieldAttributes.element_name
@@ -194,6 +197,9 @@ export default defineComponent({
       let currentValue = props.dataRow[columnName.value]
       if (getTypeOfValue(currentValue) === 'OBJECT') {
         currentValue = currentValue.value
+      }
+      if (props.fieldAttributes.is_encrypted) {
+        return '••••••••••••••••••'
       }
       return formatField({
         value: currentValue,

@@ -372,11 +372,14 @@ export default defineComponent({
           value: root.$route.query.value
         })
       }
-
+      const contextAttributes = store.getters.getTabData({
+        containerUuid
+      }).contextAttributes
       store.dispatch('getEntities', {
         parentUuid: props.parentUuid,
         containerUuid,
-        filters
+        filters,
+        contextAttributes
       }).then(responseData => {
         if (isCreateNew.value || isEmptyValue(responseData)) {
           // set values in panel

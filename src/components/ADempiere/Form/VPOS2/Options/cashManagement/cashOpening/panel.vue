@@ -75,7 +75,7 @@
           type="success"
           icon="el-icon-plus"
           class="button-base-icon"
-          :disabled="isLoadingPayment"
+          :disabled="disabledAddPay"
           :loading="isLoadingPayment"
           @click="addPayment"
         />
@@ -164,6 +164,19 @@ export default defineComponent({
       })
     })
 
+    const disabledAddPay = computed(() => {
+      if (isAddAcount.value) {
+        return isEmptyValue(cashBank.value) || isLoadingPayment.value
+      }
+      return isLoadingPayment.value
+    })
+
+    const cashBank = computed(() => {
+      return store.getters.getAttributeCashOpenFields({
+        attribute: 'cashBank'
+      })
+    })
+
     const description = computed({
       get() {
         return store.getters.getAttributeCashOpenFields({
@@ -188,7 +201,7 @@ export default defineComponent({
     })
 
     const amountDisplay = computed(() => {
-      return formatPrice({ value: Number(amount), currency: currencyPayment.iso_code })
+      return formatPrice({ value: Number(amount.value), currency: currencyPayment.value.iso_code })
     })
 
     const listPaymentsOpenst = computed(() => {
@@ -248,9 +261,10 @@ export default defineComponent({
       })
         .finally(() => {
           isLoadingPayment.value = false
-          store.commit('setCashOpeningPayments', {
-            attribute: 'amount',
-            value: 0
+          updateAmount(0)
+          store.commit('setAttributeCashOpenFields', {
+            attribute: 'cashBank',
+            value: undefined
           })
         })
     }
@@ -268,8 +282,10 @@ export default defineComponent({
       isLoadingPayment,
       // Computed
       amount,
+      cashBank,
       description,
       amountDisplay,
+      disabledAddPay,
       currencyPayment,
       listPaymentsOpenst,
       // Methods
