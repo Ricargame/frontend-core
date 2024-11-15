@@ -259,15 +259,11 @@ export class evaluator {
     // parse to number to evaluate "0" with "0.00"
     if (!Number.isNaN(value1)) {
       const convertedNumber1 = Number(value1)
-      if (!isEmptyValue(convertedNumber1)) {
-        value1 = convertedNumber1
-      }
+      if (!isEmptyValue(convertedNumber1)) value1 = convertedNumber1
     }
     if (!Number.isNaN(value2)) {
       const convertedNumber2 = Number(value2)
-      if (!isEmptyValue(convertedNumber2)) {
-        value2 = convertedNumber2
-      }
+      if (!isEmptyValue(convertedNumber2)) value2 = convertedNumber2
     }
     let isValueLogic
     switch (operand) {
