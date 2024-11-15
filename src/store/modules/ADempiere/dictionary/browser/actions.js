@@ -171,7 +171,18 @@ export default {
                     const tabViewsVisited = rootGetters.visitedViews
                     dispatch('tagsView/delView', currentRoute)
                     // go to back page
-                    const oldRouter = tabViewsVisited[tabViewsVisited.length - 1]
+                    let oldRouterProcess
+                    tabViewsVisited.filter(data => {
+                      if (!isEmptyValue(data.query)) {
+                        if (data.meta.action_uuid === currentRoute.query.parentUuid) {
+                          oldRouterProcess = data
+                        }
+                      }
+                    })
+                    let oldRouter = tabViewsVisited[tabViewsVisited.length - 1]
+                    if (!isEmptyValue(oldRouterProcess)) {
+                      oldRouter = oldRouterProcess
+                    }
                     router.push({
                       name: oldRouter.name,
                       query: {
