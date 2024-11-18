@@ -373,7 +373,7 @@ export default defineComponent({
         })
       }
       const contextAttributes = store.getters.getTabData({
-        containerUuid
+        containerUuid: currentTabMetadata.value.uuid
       }).contextAttributes
       store.dispatch('getEntities', {
         parentUuid: props.parentUuid,
