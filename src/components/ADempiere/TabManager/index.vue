@@ -597,8 +597,6 @@ export default defineComponent({
         }
       }
 
-      console.log({ query, routerParams, currentRoute })
-
       const { keyColumn } = store.getters.getStoredTab(props.parentUuid, containerUuid)
       if (!isEmptyValue(query.recordId)) {
         filtersRecord = {
