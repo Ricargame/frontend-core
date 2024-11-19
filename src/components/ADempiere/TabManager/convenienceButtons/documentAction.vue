@@ -202,7 +202,7 @@ export default defineComponent({
     const recordId = computed(() => {
       const { params, query } = currentRouter
       let id = store.getters.getIdOfContainer({
-        containerUuid: 'qwe',
+        containerUuid: containerUuid,
         tableName: props.tabAttributes.table_name
       })
       if (isEmptyValue(id) && !isEmptyValue(params) && !isEmptyValue(params.recordId)) id = currentRouter.params.recordId
