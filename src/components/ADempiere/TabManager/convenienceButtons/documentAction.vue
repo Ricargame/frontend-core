@@ -172,7 +172,7 @@ export default defineComponent({
     }
   },
 
-  setup(props) {
+  setup(props, { root }) {
     /**
      * Const
      */
@@ -198,11 +198,17 @@ export default defineComponent({
     const recordUuid = computed(() => {
       return store.getters.getUuidOfContainer(containerUuid)
     })
+    const currentRouter = root._route
     const recordId = computed(() => {
-      return store.getters.getIdOfContainer({
-        containerUuid: containerUuid,
+      const { params, query } = currentRouter
+      let id = store.getters.getIdOfContainer({
+        containerUuid: 'qwe',
         tableName: props.tabAttributes.table_name
       })
+      if (isEmptyValue(id) && !isEmptyValue(params) && !isEmptyValue(params.recordId)) id = currentRouter.params.recordId
+      if (isEmptyValue(id) && !isEmptyValue(query) && !isEmptyValue(query.recordId)) id = query.recordId
+
+      return id
     })
 
     const currentRecordDocumentStatus = computed(() => {
