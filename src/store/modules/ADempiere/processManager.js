@@ -288,9 +288,15 @@ const processManager = {
                   })
                 }).forEach(tabItem => {
                   // if loaded data refresh this data
+                  const { keyColumn } = tabItem
+                  const filtersRecord = {
+                    columnName: keyColumn,
+                    value: recordId
+                  }
                   dispatch('getEntities', {
                     parentUuid: windowsUuid,
-                    containerUuid: tabItem.uuid
+                    containerUuid: tabItem.uuid,
+                    filtersRecord
                   })
                 })
               }
