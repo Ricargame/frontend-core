@@ -421,11 +421,11 @@ export default defineComponent({
         const { transaction_type } = list
         if (list.type === 'isInvoce') {
           if (transaction_type.value === 'R') {
-            return -(list.open_amount)
+            return -(list.amountApplied)
           }
-          return list.open_amount
+          return list.applied
         }
-        return list.open_amount
+        return list.applied
       })
       const sumPayment = selectListAll.value.filter(list => {
         return list.type !== 'isInvoce'
